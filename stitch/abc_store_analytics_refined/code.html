@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ABC Store | Luxury Analytics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#D4AF37",
+                        "background-light": "#F9F9F7",
+                        "luxury-charcoal": "#1A1A1A",
+                        "soft-gold": "#FEFBF0",
+                        "marble-white": "#FFFFFF"
+                    },
+                    fontFamily: {
+                        "display": ["Playfair Display", "serif"],
+                        "sans": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "2px",
+                        "xl": "4px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .gold-shadow {
+            box-shadow: 0px 4px 20px rgba(212, 175, 55, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gold-shadow:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 10px 30px rgba(212, 175, 55, 0.15);
+        }
+        .luxury-gradient {
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+        .section-accent {
+            position: relative;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+        .section-accent::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 1px;
+            background-color: #D4AF37;
+        }
+        .kpi-number {
+            font-size: 36px;
+            line-height: 1;
+            font-weight: 700;
+        }
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .label-text {
+            font-size: 13px;
+            color: #6B7280;
+        }
+        .table-data {
+            font-size: 14px;
+            color: #1A1A1A;
+        }
+    </style>
+</head>
+<body class="bg-background-light font-sans text-luxury-charcoal antialiased">
+<!-- Page Header -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-primary/20 px-6 py-5 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-2 text-primary text-xs font-bold tracking-widest uppercase hover:opacity-70 transition-all" href="#">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+<span>All Stores</span>
+</a>
+<div class="hidden md:block w-px h-10 bg-primary/20"></div>
+<div class="flex flex-col">
+<h1 class="font-display text-2xl lg:text-3xl font-bold tracking-tight">ABC Store</h1>
+<div class="flex items-center gap-3 text-[11px] uppercase tracking-wider text-gray-500">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary text-sm">location_on</span> Mumbai</span>
+<span class="flex items-center gap-1 text-green-600 font-bold"><span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Active</span>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex bg-gray-50 rounded-full p-1 border border-gray-100">
+<button class="px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors">Today</button>
+<button class="px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors">Week</button>
+<button class="px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-primary text-white shadow-md">Month</button>
+<button class="px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors">Year</button>
+</div>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-white border border-primary text-primary rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-lg">download</span>
+            Export CSV
+        </button>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto p-8 lg:p-16 space-y-16">
+<!-- KPI Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Card 1 -->
+<div class="bg-white p-6 rounded-none gold-shadow border border-primary/5">
+<p class="card-title text-primary mb-2">Revenue</p>
+<h3 class="kpi-number text-luxury-charcoal">₹3,45,000</h3>
+<p class="label-text mt-2 uppercase tracking-tighter">Current Month</p>
+<div class="mt-6 flex items-center text-green-600 text-[13px] font-semibold">
+<span class="material-symbols-outlined text-base mr-1">trending_up</span>
+                +15% vs last month
+            </div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white p-6 rounded-none gold-shadow border border-primary/5">
+<p class="card-title text-primary mb-2">Transactions</p>
+<h3 class="kpi-number text-luxury-charcoal">287 Sales</h3>
+<p class="label-text mt-2 uppercase tracking-tighter">Current Month</p>
+<div class="mt-6 flex items-center text-green-600 text-[13px] font-semibold">
+<span class="material-symbols-outlined text-base mr-1">add_circle</span>
+                +11 from yesterday
+            </div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white p-6 rounded-none gold-shadow border border-primary/5">
+<p class="card-title text-primary mb-2">Avg Sale</p>
+<h3 class="kpi-number text-luxury-charcoal">₹1,203</h3>
+<p class="label-text mt-2 uppercase tracking-tighter">Per Transaction</p>
+<div class="mt-6 flex items-center text-primary text-[13px] font-semibold">
+<span class="material-symbols-outlined text-base mr-1">star</span>
+                ₹89 above brand average
+            </div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white p-6 rounded-none gold-shadow border border-primary/5 relative overflow-hidden">
+<p class="card-title text-primary mb-2">Top Customer</p>
+<h3 class="kpi-number text-luxury-charcoal truncate">Sourav Kale</h3>
+<p class="label-text mt-2 uppercase tracking-tighter">₹8,500 Total Spend</p>
+<div class="mt-6 flex items-center text-primary text-[13px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-base mr-1">workspace_premium</span>
+                Platinum Member
+            </div>
+</div>
+</div>
+<!-- Revenue Chart Section -->
+<section>
+<div class="section-accent flex justify-between items-end">
+<h2 class="font-display text-2xl font-bold">Daily Revenue Analysis</h2>
+<div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">
+<span class="flex items-center gap-2"><span class="w-2.5 h-2.5 bg-primary rounded-full"></span> This Month</span>
+<span class="flex items-center gap-2"><span class="w-5 h-[1px] border-t border-dashed border-gray-400"></span> Last Month</span>
+</div>
+</div>
+<div class="bg-white rounded-none border border-primary/10 overflow-hidden shadow-sm mt-4">
+<div class="p-10 luxury-gradient h-96 relative">
+<!-- Mock Chart Visualization -->
+<div class="absolute inset-0 p-10 flex flex-col justify-end">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 1000 200">
+<!-- Grid Lines -->
+<line stroke="#f1f1f1" stroke-dasharray="2 2" x1="0" x2="1000" y1="50" y2="50"></line>
+<line stroke="#f1f1f1" stroke-dasharray="2 2" x1="0" x2="1000" y1="100" y2="100"></line>
+<line stroke="#f1f1f1" stroke-dasharray="2 2" x1="0" x2="1000" y1="150" y2="150"></line>
+<!-- Last Month Dashed Line (Spline) -->
+<path d="M0,150 C50,140 100,160 200,140 S300,155 400,145 S500,150 600,135 S700,145 800,140 S900,150 1000,145" fill="none" stroke="#D1D5DB" stroke-dasharray="4" stroke-width="1.5"></path>
+<!-- Current Month Area -->
+<path d="M0,200 L0,160 C100,140 200,120 300,130 S400,100 500,110 S600,60 700,80 S800,70 900,90 1000,85 L1000,200 Z" fill="url(#goldGradient)" fill-opacity="0.15"></path>
+<!-- Current Month Line (Spline) -->
+<path d="M0,160 C100,140 200,120 300,130 S400,100 500,110 S600,60 700,80 S800,70 900,90 1000,85" fill="none" stroke="#D4AF37" stroke-width="2.5"></path>
+<!-- Tooltip Peak Point -->
+<circle cx="600" cy="60" fill="#D4AF37" r="4">
+<animate attributename="r" dur="3s" repeatcount="indefinite" values="4;6;4"></animate>
+</circle>
+<defs>
+<lineargradient id="goldGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#D4AF37"></stop>
+<stop offset="100%" stop-color="white" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- X-Axis Labels -->
+<div class="flex justify-between mt-8 text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em]">
+<span>Mar 1</span><span>Mar 8</span><span>Mar 15</span><span>Mar 22</span><span>Mar 31</span>
+</div>
+<!-- Floating Tooltip -->
+<div class="absolute top-20 left-[60%] -translate-x-1/2 bg-luxury-charcoal text-white px-4 py-2.5 rounded-sm shadow-2xl text-[11px] flex flex-col items-center border border-primary/20">
+<span class="font-medium opacity-70 uppercase tracking-widest mb-1">Peak Day: March 18</span>
+<span class="text-primary font-bold text-sm">₹24,500</span>
+<div class="absolute -bottom-1 w-2 h-2 bg-luxury-charcoal rotate-45 border-r border-b border-primary/20"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Three Column Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Top Products -->
+<div class="bg-white rounded-none border border-primary/10 shadow-sm flex flex-col h-full overflow-hidden hover:border-primary/30 transition-all">
+<div class="p-6 border-b border-primary/5 bg-gray-50/50">
+<h3 class="card-title text-luxury-charcoal">Top Performing Products</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-white text-[10px] uppercase tracking-widest font-bold text-gray-400 border-b border-primary/10">
+<tr>
+<th class="px-6 py-4">Rank</th>
+<th class="px-6 py-4">Item</th>
+<th class="px-6 py-4 text-right">Units</th>
+<th class="px-6 py-4 text-right">Value</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr class="hover:bg-soft-gold transition-colors duration-200">
+<td class="px-6 py-5 font-bold text-primary text-xs">01</td>
+<td class="px-6 py-5 table-data font-medium">Oud Al Layl</td>
+<td class="px-6 py-5 table-data text-right">42</td>
+<td class="px-6 py-5 table-data text-right font-bold">₹54,600</td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors duration-200">
+<td class="px-6 py-5 font-bold text-primary text-xs">02</td>
+<td class="px-6 py-5 table-data font-medium">Mysore Sandal</td>
+<td class="px-6 py-5 table-data text-right">38</td>
+<td class="px-6 py-5 table-data text-right font-bold">₹45,600</td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors duration-200">
+<td class="px-6 py-5 font-bold text-primary text-xs">03</td>
+<td class="px-6 py-5 table-data font-medium">Rose Musk</td>
+<td class="px-6 py-5 table-data text-right">31</td>
+<td class="px-6 py-5 table-data text-right font-bold">₹37,200</td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors duration-200">
+<td class="px-6 py-5 font-bold text-primary text-xs">04</td>
+<td class="px-6 py-5 table-data font-medium">Amber Gold</td>
+<td class="px-6 py-5 table-data text-right">24</td>
+<td class="px-6 py-5 table-data text-right font-bold">₹31,200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Size Preference -->
+<div class="bg-white rounded-none border border-primary/10 shadow-sm p-8 flex flex-col hover:border-primary/30 transition-all">
+<h3 class="card-title text-luxury-charcoal mb-8">Size Preferences</h3>
+<div class="flex-grow flex items-end justify-between h-48 gap-6 px-2">
+<div class="flex-1 flex flex-col items-center gap-4 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-all duration-500 rounded-t-sm" style="height: 45%;"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">15ml</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-4 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-all duration-500 rounded-t-sm" style="height: 85%;"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">30ml</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-4 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-all duration-500 rounded-t-sm" style="height: 65%;"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">50ml</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-4 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-all duration-500 rounded-t-sm" style="height: 35%;"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">100ml</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-primary/5">
+<p class="label-text italic text-center">30ml remains the preferred luxury gifting standard.</p>
+</div>
+</div>
+<!-- Sales by Category -->
+<div class="bg-white rounded-none border border-primary/10 shadow-sm p-8 flex flex-col items-center hover:border-primary/30 transition-all">
+<h3 class="card-title text-luxury-charcoal mb-10 w-full">Category Share</h3>
+<div class="relative w-44 h-44">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#F3F4F6" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#D4AF37" stroke-dasharray="40 60" stroke-dashoffset="0" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#E5C560" stroke-dasharray="25 75" stroke-dashoffset="-40" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#F1E2A8" stroke-dasharray="20 80" stroke-dashoffset="-65" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#FBF4D7" stroke-dasharray="15 85" stroke-dashoffset="-85" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Aggregate</span>
+<span class="text-xl font-display font-bold">100%</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-8 gap-y-4 mt-10 w-full text-[10px] font-bold uppercase tracking-widest">
+<div class="flex items-center gap-2.5"><span class="w-2 h-2 bg-primary"></span> Perfume (40%)</div>
+<div class="flex items-center gap-2.5"><span class="w-2 h-2 bg-[#E5C560]"></span> Attar (25%)</div>
+<div class="flex items-center gap-2.5"><span class="w-2 h-2 bg-[#F1E2A8]"></span> Bakhoor (20%)</div>
+<div class="flex items-center gap-2.5"><span class="w-2 h-2 bg-[#FBF4D7]"></span> Solid (15%)</div>
+</div>
+</div>
+</div>
+<!-- Customer Table -->
+<section>
+<div class="section-accent flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<h2 class="font-display text-2xl font-bold">Client Relationship Ledger</h2>
+<div class="relative w-full md:w-96">
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-primary/20 rounded-none text-[13px] focus:ring-primary focus:border-primary placeholder:text-gray-300 placeholder:uppercase placeholder:tracking-widest" placeholder="Find Client Name or Identifier..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-3.5 text-primary text-xl">search</span>
+</div>
+</div>
+<div class="bg-white rounded-none border border-primary/10 shadow-sm overflow-hidden mt-4">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-gray-50/50 text-gray-400 font-bold border-b border-primary/10 uppercase tracking-[0.15em] text-[10px]">
+<tr>
+<th class="px-8 py-5">Customer Profile</th>
+<th class="px-8 py-5">Contact Details</th>
+<th class="px-8 py-5">Acquisition History</th>
+<th class="px-8 py-5 text-right">Lifetime Value</th>
+<th class="px-8 py-5">Last Presence</th>
+<th class="px-8 py-5 text-center">Engagement</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr class="hover:bg-soft-gold transition-colors duration-300">
+<td class="px-8 py-6 font-bold table-data">Sourav Kale</td>
+<td class="px-8 py-6 label-text leading-relaxed font-medium">98200XXXXX<br/>sourav.k@example.com</td>
+<td class="px-8 py-6 table-data text-[13px]">Oud Al Layl, Mysore Sandal, +2 others</td>
+<td class="px-8 py-6 text-right font-bold table-data text-primary">₹8,500</td>
+<td class="px-8 py-6 table-data">Mar 12, 2026</td>
+<td class="px-8 py-6 text-center"><span class="px-4 py-1 border border-primary/20 bg-primary/5 text-primary rounded-full text-[10px] font-bold">12 Visits</span></td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors duration-300">
+<td class="px-8 py-6 font-bold table-data">Ananya Sharma</td>
+<td class="px-8 py-6 label-text leading-relaxed font-medium">97690XXXXX<br/>ananya.s@example.com</td>
+<td class="px-8 py-6 table-data text-[13px]">Rose Musk, Solid Perfume</td>
+<td class="px-8 py-6 text-right font-bold table-data text-primary">₹4,200</td>
+<td class="px-8 py-6 table-data">Mar 10, 2026</td>
+<td class="px-8 py-6 text-center"><span class="px-4 py-1 border border-primary/20 bg-primary/5 text-primary rounded-full text-[10px] font-bold">5 Visits</span></td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors duration-300">
+<td class="px-8 py-6 font-bold table-data">Rahul Mehta</td>
+<td class="px-8 py-6 label-text leading-relaxed font-medium">98191XXXXX<br/>rahul.m@example.com</td>
+<td class="px-8 py-6 table-data text-[13px]">Bakhoor Premium, Oud Al Layl</td>
+<td class="px-8 py-6 text-right font-bold table-data text-primary">₹6,800</td>
+<td class="px-8 py-6 table-data">Mar 08, 2026</td>
+<td class="px-8 py-6 text-center"><span class="px-4 py-1 border border-primary/20 bg-primary/5 text-primary rounded-full text-[10px] font-bold">8 Visits</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-white border-t border-primary/10 flex justify-center">
+<button class="text-primary font-bold text-[11px] uppercase tracking-[0.2em] hover:text-luxury-charcoal transition-all">View Full Archive</button>
+</div>
+</div>
+</section>
+<!-- Bottom Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Discount Summary -->
+<div class="bg-white rounded-none border border-primary/10 shadow-sm p-10 hover:border-primary/30 transition-all">
+<h3 class="font-display font-bold text-xl mb-8 section-accent">Discount Concessions</h3>
+<div class="flex items-center justify-between mb-4">
+<span class="label-text uppercase tracking-widest font-bold">Total Concessions Granted</span>
+<span class="text-2xl font-bold text-luxury-charcoal">₹45,000</span>
+</div>
+<div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-6">
+<div class="bg-primary h-full w-[13%]"></div>
+</div>
+<p class="text-[11px] text-gray-400 mb-10 italic">This accounts for 13.04% of gross revenue for the current period.</p>
+<h4 class="text-[10px] uppercase tracking-[0.15em] font-bold text-primary/70 mb-6 border-b border-primary/10 pb-2">Primary Drivers</h4>
+<div class="space-y-5">
+<div class="flex justify-between items-center text-[13px]">
+<span class="font-medium text-gray-600">Citrus Burst (Bundle Incentive)</span>
+<span class="font-bold">-₹12,400</span>
+</div>
+<div class="flex justify-between items-center text-[13px]">
+<span class="font-medium text-gray-600">Lavender Mist (Inventory Clearance)</span>
+<span class="font-bold">-₹8,200</span>
+</div>
+<div class="flex justify-between items-center text-[13px]">
+<span class="font-medium text-gray-600">New Client Welcome Offer</span>
+<span class="font-bold">-₹15,100</span>
+</div>
+</div>
+</div>
+<!-- Month over Month -->
+<div class="bg-white rounded-none border border-primary/10 shadow-sm overflow-hidden flex flex-col hover:border-primary/30 transition-all">
+<div class="p-10 pb-4">
+<h3 class="font-display font-bold text-xl section-accent">Performance Trajectory</h3>
+</div>
+<div class="flex-grow overflow-x-auto p-10 pt-0">
+<table class="w-full text-left">
+<thead class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">
+<tr class="border-b border-primary/5">
+<th class="py-4">Metric</th>
+<th class="py-4">Jan 2026</th>
+<th class="py-4">Feb 2026</th>
+<th class="py-4">Mar 2026</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr class="hover:bg-soft-gold transition-colors">
+<td class="py-5 text-[13px] font-medium text-gray-600">Revenue</td>
+<td class="py-5 text-[13px] table-data">₹2,85,000</td>
+<td class="py-5 text-[13px] table-data">₹3,00,000</td>
+<td class="py-5 table-data font-bold text-primary">₹3,45,000</td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors">
+<td class="py-5 text-[13px] font-medium text-gray-600">Transactions</td>
+<td class="py-5 text-[13px] table-data">210</td>
+<td class="py-5 text-[13px] table-data">255</td>
+<td class="py-5 table-data font-bold">287</td>
+</tr>
+<tr class="hover:bg-soft-gold transition-colors">
+<td class="py-5 text-[13px] font-medium text-gray-600">Avg Sale</td>
+<td class="py-5 text-[13px] table-data">₹1,357</td>
+<td class="py-5 text-[13px] table-data">₹1,176</td>
+<td class="py-5 table-data font-bold">₹1,203</td>
+</tr>
+<tr class="bg-primary/5">
+<td class="py-5 px-4 font-bold uppercase text-[10px] tracking-[0.2em] text-primary">Growth Index</td>
+<td class="py-5 px-4 text-[10px] font-bold text-gray-300">—</td>
+<td class="py-5 px-4 text-[11px] font-bold text-green-600">+5.2%</td>
+<td class="py-5 px-4 text-[11px] font-bold text-green-600 underline decoration-2 underline-offset-4">+15.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="mt-24 border-t border-primary/20 p-12 text-center text-gray-400 text-[10px] uppercase tracking-[0.3em] bg-white">
+    Luxury Retail Intelligence Platform © 2026 ABC Store Mumbai • Confidential
+</footer>
+</body></html>

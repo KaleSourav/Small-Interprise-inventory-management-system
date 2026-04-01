@@ -1,14 +1,15 @@
-import { getUserFromToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
 // ── DELETE /api/products/[id] ─────────────────────────────────────────────────
 // Superadmin only. Deletes the product; variants are cascade-deleted by the DB.
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = await getUserFromToken();
+  const token = req.cookies.get('auth_token')?.value;
+  const user  = token ? verifyToken(token) : null;
   if (!user || user.role !== 'superadmin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -44,7 +45,8 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = await getUserFromToken();
+  const token = req.cookies.get('auth_token')?.value;
+  const user  = token ? verifyToken(token) : null;
   if (!user || user.role !== 'superadmin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

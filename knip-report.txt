@@ -1,0 +1,195 @@
+Unused files (90)
+__CLEANUP__/clerk/app-page.tsx                       
+__CLEANUP__/clerk/app-sidebar.tsx                    
+__CLEANUP__/clerk/dashboard-page.tsx                 
+__CLEANUP__/clerk/infoconfig.ts                      
+__CLEANUP__/clerk/providers.tsx                      
+__CLEANUP__/clerk/use-nav.ts                         
+__CLEANUP__/clerk/user-nav.tsx                       
+__CLEANUP__/kanban/nav-config.ts                     
+__CLEANUP__/scripts/cleanup-config.js                
+__CLEANUP__/scripts/cleanup-interactive.js           
+__CLEANUP__/scripts/cleanup.js                       
+__CLEANUP__/sentry/bar_stats-error.tsx               
+__CLEANUP__/sentry/global-error.tsx                  
+__CLEANUP__/sentry/next.config.ts                    
+src/components/file-uploader.tsx                     
+src/components/form-card-skeleton.tsx                
+src/components/forms/demo-form.tsx                   
+src/components/forms/form-checkbox-group.tsx         
+src/components/forms/form-checkbox.tsx               
+src/components/forms/form-date-picker.tsx            
+src/components/forms/form-file-upload.tsx            
+src/components/forms/form-input.tsx                  
+src/components/forms/form-radio-group.tsx            
+src/components/forms/form-select.tsx                 
+src/components/forms/form-slider.tsx                 
+src/components/forms/form-switch.tsx                 
+src/components/forms/form-textarea.tsx               
+src/components/modal/alert-modal.tsx                 
+src/components/nav-main.tsx                          
+src/components/nav-projects.tsx                      
+src/components/nav-user.tsx                          
+src/components/org-switcher.tsx                      
+src/components/ui/accordion.tsx                      
+src/components/ui/alert-dialog.tsx                   
+src/components/ui/aspect-ratio.tsx                   
+src/components/ui/calendar.tsx                       
+src/components/ui/checkbox.tsx                       
+src/components/ui/command.tsx                        
+src/components/ui/context-menu.tsx                   
+src/components/ui/dialog.tsx                         
+src/components/ui/drawer.tsx                         
+src/components/ui/form.tsx                           
+src/components/ui/frame.tsx                          
+src/components/ui/hover-card.tsx                     
+src/components/ui/input-otp.tsx                      
+src/components/ui/menubar.tsx                        
+src/components/ui/modal.tsx                          
+src/components/ui/navigation-menu.tsx                
+src/components/ui/pagination.tsx                     
+src/components/ui/popover.tsx                        
+src/components/ui/progress.tsx                       
+src/components/ui/radio-group.tsx                    
+src/components/ui/resizable.tsx                      
+src/components/ui/slider.tsx                         
+src/components/ui/switch.tsx                         
+src/components/ui/table.tsx                          
+src/components/ui/table/data-table-column-header.tsx 
+src/components/ui/table/data-table-date-filter.tsx   
+src/components/ui/table/data-table-faceted-filter.tsx
+src/components/ui/table/data-table-pagination.tsx    
+src/components/ui/table/data-table-skeleton.tsx      
+src/components/ui/table/data-table-slider-filter.tsx 
+src/components/ui/table/data-table-toolbar.tsx       
+src/components/ui/table/data-table-view-options.tsx  
+src/components/ui/table/data-table.tsx               
+src/components/ui/tabs.tsx                           
+src/components/ui/textarea.tsx                       
+src/components/ui/toggle-group.tsx                   
+src/components/ui/toggle.tsx                         
+src/config/data-table.ts                             
+src/config/infoconfig.ts                             
+src/constants/data.ts                                
+src/features/auth/components/github-auth-button.tsx  
+src/features/auth/components/sign-in-view.tsx        
+src/features/auth/components/user-auth-form.tsx      
+src/features/overview/components/overview.tsx        
+src/features/profile/utils/form-schema.ts            
+src/hooks/use-callback-ref.ts                        
+src/hooks/use-callback-ref.tsx                       
+src/hooks/use-controllable-state.tsx                 
+src/hooks/use-data-table.ts                          
+src/hooks/use-debounce.tsx                           
+src/hooks/use-debounced-callback.ts                  
+src/hooks/use-multistep-form.tsx                     
+src/lib/data-table.ts                                
+src/lib/format.ts                                    
+src/lib/parsers.ts                                   
+src/lib/searchparams.ts                              
+src/types/base-form.ts                               
+src/types/data-table.ts                              
+Unused dependencies (42)
+@dnd-kit/core                    package.json:26:6 
+@dnd-kit/modifiers               package.json:27:6 
+@dnd-kit/sortable                package.json:28:6 
+@dnd-kit/utilities               package.json:29:6 
+@hookform/resolvers              package.json:30:6 
+@radix-ui/react-accordion        package.json:31:6 
+@radix-ui/react-alert-dialog     package.json:32:6 
+@radix-ui/react-aspect-ratio     package.json:33:6 
+@radix-ui/react-checkbox         package.json:35:6 
+@radix-ui/react-context-menu     package.json:37:6 
+@radix-ui/react-hover-card       package.json:40:6 
+@radix-ui/react-menubar          package.json:43:6 
+@radix-ui/react-navigation-menu  package.json:44:6 
+@radix-ui/react-popover          package.json:45:6 
+@radix-ui/react-progress         package.json:46:6 
+@radix-ui/react-radio-group      package.json:47:6 
+@radix-ui/react-slider           package.json:51:6 
+@radix-ui/react-switch           package.json:53:6 
+@radix-ui/react-tabs             package.json:54:6 
+@radix-ui/react-toast            package.json:55:6 
+@radix-ui/react-toggle           package.json:56:6 
+@radix-ui/react-toggle-group     package.json:57:6 
+@tanstack/react-table            package.json:63:6 
+axios                            package.json:64:6 
+cmdk                             package.json:68:6 
+date-fns                         package.json:69:6 
+input-otp                        package.json:72:6 
+json2csv                         package.json:74:6 
+motion                           package.json:81:6 
+react-day-picker                 package.json:88:6 
+react-dropzone                   package.json:90:6 
+react-hook-form                  package.json:91:6 
+react-is                         package.json:92:6 
+react-resizable-panels           package.json:93:6 
+react-responsive                 package.json:94:6 
+sharp                            package.json:96:6 
+sort-by                          package.json:98:6 
+tailwindcss-animate              package.json:101:6
+uuid                             package.json:103:6
+vaul                             package.json:104:6
+zod                              package.json:105:6
+zustand                          package.json:106:6
+Unused devDependencies (2)
+@types/sort-by  package.json:115:6
+@types/uuid     package.json:116:6
+Unused exports (47)
+badgeVariants                       src/components/ui/badge.tsx:46:17                   
+BreadcrumbEllipsis                  src/components/ui/breadcrumb.tsx:108:3              
+ChartLegend                         src/components/ui/chart.tsx:351:3                   
+ChartLegendContent                  src/components/ui/chart.tsx:352:3                   
+ChartStyle                          src/components/ui/chart.tsx:353:3                   
+DropdownMenuPortal                  src/components/ui/dropdown-menu.tsx:243:3           
+DropdownMenuCheckboxItem            src/components/ui/dropdown-menu.tsx:249:3           
+DropdownMenuRadioGroup              src/components/ui/dropdown-menu.tsx:250:3           
+DropdownMenuRadioItem               src/components/ui/dropdown-menu.tsx:251:3           
+DropdownMenuShortcut                src/components/ui/dropdown-menu.tsx:253:3           
+DropdownMenuSub                     src/components/ui/dropdown-menu.tsx:254:3           
+DropdownMenuSubTrigger              src/components/ui/dropdown-menu.tsx:255:3           
+DropdownMenuSubContent              src/components/ui/dropdown-menu.tsx:256:3           
+InfobarFooter                       src/components/ui/infobar.tsx:783:3                 
+InfobarGroupAction                  src/components/ui/infobar.tsx:785:3                 
+InfobarGroupLabel                   src/components/ui/infobar.tsx:787:3                 
+InfobarInput                        src/components/ui/infobar.tsx:789:3                 
+InfobarInset                        src/components/ui/infobar.tsx:790:3                 
+InfobarMenu                         src/components/ui/infobar.tsx:791:3                 
+InfobarMenuAction                   src/components/ui/infobar.tsx:792:3                 
+InfobarMenuBadge                    src/components/ui/infobar.tsx:793:3                 
+InfobarMenuButton                   src/components/ui/infobar.tsx:794:3                 
+InfobarMenuItem                     src/components/ui/infobar.tsx:795:3                 
+InfobarMenuSkeleton                 src/components/ui/infobar.tsx:796:3                 
+InfobarMenuSub                      src/components/ui/infobar.tsx:797:3                 
+InfobarMenuSubButton                src/components/ui/infobar.tsx:798:3                 
+InfobarMenuSubItem                  src/components/ui/infobar.tsx:799:3                 
+InfobarSeparator                    src/components/ui/infobar.tsx:802:3                 
+ScrollBar                           src/components/ui/scroll-area.tsx:58:22             
+SelectScrollDownButton              src/components/ui/select.tsx:180:3                  
+SelectScrollUpButton                src/components/ui/select.tsx:181:3                  
+SheetTrigger                        src/components/ui/sheet.tsx:132:3                   
+SheetClose                          src/components/ui/sheet.tsx:133:3                   
+SheetFooter                         src/components/ui/sheet.tsx:136:3                   
+SidebarGroupAction                  src/components/ui/sidebar.tsx:705:3                 
+SidebarGroupContent                 src/components/ui/sidebar.tsx:706:3                 
+SidebarInput                        src/components/ui/sidebar.tsx:709:3                 
+SidebarMenuAction                   src/components/ui/sidebar.tsx:712:3                 
+SidebarMenuBadge                    src/components/ui/sidebar.tsx:713:3                 
+SidebarMenuSkeleton                 src/components/ui/sidebar.tsx:716:3                 
+SidebarSeparator                    src/components/ui/sidebar.tsx:722:3                 
+useSidebar                          src/components/ui/sidebar.tsx:724:3                 
+fakeProducts                        src/constants/mock-api.ts:24:14                     
+metadata                            src/features/auth/components/sign-up-view.tsx:9:14  
+description                         src/features/overview/components/bar-graph.tsx:20:14
+generateInvoicePDF        function  src/lib/invoice-generator.ts:4:23                   
+formatBytes               function  src/lib/utils.ts:8:17                               
+Unused exported types (7)
+Icon                         type       src/components/icons.tsx:41:13 
+Product                      type       src/constants/mock-api.ts:12:13
+NavItemWithChildren          interface  src/types/index.ts:25:18       
+NavItemWithOptionalChildren  interface  src/types/index.ts:29:18       
+FooterItem                   interface  src/types/index.ts:33:18       
+MainNavItem                  type       src/types/index.ts:42:13       
+SidebarNavItem               type       src/types/index.ts:44:13       
+Configuration hints (1)
+. (root)    .  Create knip.json configuration file, and add entry and/or refine project files (90 unused files)

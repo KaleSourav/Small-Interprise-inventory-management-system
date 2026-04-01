@@ -15,13 +15,6 @@ interface RawProduct { id: string; name: string; mrp: number; category_id: strin
 interface Form     { name: string; category_id: string; }
 interface DraftVariant { size_label: string; price: string; } // for add-form draft
 
-// Perfume defaults shown as info
-const PERFUME_DEFAULTS = [
-  { label: '15ml', price: '₹300' },
-  { label: '30ml', price: '₹550' },
-  { label: '50ml', price: '₹750' },
-  { label: '100ml', price: '₹1,300' },
-];
 
 export default function ProductCatalogPage() {
   const router = useRouter();
@@ -103,10 +96,6 @@ export default function ProductCatalogPage() {
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-  const isPerfumeCat = (catId: string) =>
-    categories.find(c => c.id === catId)?.name?.toLowerCase() === 'perfume';
-
   const variantLabel = (v: Variant) =>
     v.size_label ? v.size_label : v.size_ml ? `${v.size_ml}ml` : '—';
 
@@ -115,15 +104,16 @@ export default function ProductCatalogPage() {
     if (!form.name.trim() || !form.category_id) {
       setError('Please fill in all fields'); return;
     }
-    const isPerf = isPerfumeCat(form.category_id);
-    if (!isPerf && newVariants.length === 0) {
-      setError('Add at least one size variant'); return;
+    if (newVariants.length === 0) {
+      setError('Add at least one size & price before saving'); return;
     }
     setError('');
 
-    const variantsPayload = isPerf
-      ? undefined
-      : newVariants.map(v => ({ size_label: v.size_label, size_ml: null, price: parseFloat(v.price) }));
+    const variantsPayload = newVariants.map(v => ({
+      size_label: v.size_label.trim(),
+      size_ml:    null,
+      price:      parseFloat(v.price)
+    }));
 
     const res  = await fetch('/api/products', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -132,12 +122,29 @@ export default function ProductCatalogPage() {
     const data = await res.json();
     if (res.ok) {
       const cat = categories.find(c => c.id === form.category_id);
-      setProducts(p => [...p, { ...data, category_name: cat?.name ?? '', product_variants: data.product_variants ?? [] }]);
+
+      // Always re-fetch fresh variants from DB — POST response may lag
+      let freshVariants: Variant[] = data.product_variants ?? [];
+      try {
+        const varRes = await fetch(`/api/variants?product_id=${data.id}`);
+        if (varRes.ok) {
+          const varData = await varRes.json();
+          if (Array.isArray(varData) && varData.length > 0) {
+            freshVariants = varData;
+          }
+        }
+      } catch { /* fallback to POST response variants */ }
+
+      setProducts(p => [...p, {
+        ...data,
+        category_name: cat?.name ?? '',
+        product_variants: freshVariants
+      }]);
       setForm({ name: '', category_id: '' });
       setNewVariants([]);
       setVariantDraft({ size_label: '', price: '' });
-      setSuccessMsg('Product added!');
-      setTimeout(() => setSuccessMsg(''), 2500);
+      setSuccessMsg(`Product added with ${freshVariants.length} size${freshVariants.length !== 1 ? 's' : ''}!`);
+      setTimeout(() => setSuccessMsg(''), 3000);
     } else {
       setError(data.error || 'Failed to add product');
     }
@@ -500,12 +507,12 @@ export default function ProductCatalogPage() {
           <CardHeader style={{ paddingBottom: '0.25rem' }}>
             <CardTitle style={{ fontSize: '1rem', fontWeight: '800', color: '#1A1A1A' }}>Add New Product</CardTitle>
           </CardHeader>
-          <CardContent style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+          <CardContent style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-            {/* Row 1: Category + Name */}
+            {/* Step 1 + 2: Category + Name in one row */}
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <div style={{ flex: '1 1 180px' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: '700', color: '#1A1A1A', display: 'block', marginBottom: '0.3rem' }}>Category *</label>
+                <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#9CA3AF', display: 'block', marginBottom: '0.3rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>① Category *</label>
                 <select value={form.category_id} onChange={e => { setForm(f => ({ ...f, category_id: e.target.value })); setNewVariants([]); setVariantDraft({ size_label: '', price: '' }); }}
                   style={{ width: '100%', padding: '0.45rem 0.65rem', border: '1px solid #E8D5A3', borderRadius: '8px', fontSize: '0.875rem', color: form.category_id ? '#1A1A1A' : '#9CA3AF', background: '#fff', outline: 'none', cursor: 'pointer' }}>
                   <option value="" disabled>Select category…</option>
@@ -513,73 +520,92 @@ export default function ProductCatalogPage() {
                 </select>
               </div>
               <div style={{ flex: '2 1 220px' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: '700', color: '#1A1A1A', display: 'block', marginBottom: '0.3rem' }}>Product Name *</label>
+                <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#9CA3AF', display: 'block', marginBottom: '0.3rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>② Product Name *</label>
                 <Input placeholder="e.g. Bella Vita Luxe" value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  onKeyDown={e => e.key === 'Enter' && handleAdd()} style={{ background: '#fff', color: '#1A1A1A', borderColor: '#E8D5A3' }} />
+                  style={{ background: '#fff', color: '#1A1A1A', borderColor: '#E8D5A3' }} />
               </div>
             </div>
 
-            {/* Row 2: Variants section (conditional on category) */}
+            {/* Step 3: Variants — universal for ALL categories */}
             {form.category_id && (
-              isPerfumeCat(form.category_id) ? (
-                // Perfume info box
-                <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '0.5rem', padding: '0.75rem 1rem' }}>
-                  <p style={{ margin: '0 0 0.4rem 0', fontWeight: '700', fontSize: '0.82rem', color: '#0369a1' }}>🌸 Standard perfume sizes will be auto-created:</p>
-                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    {PERFUME_DEFAULTS.map(d => (
-                      <span key={d.label} style={{ background: '#e0f2fe', color: '#0369a1', borderRadius: '999px', padding: '0.2rem 0.7rem', fontSize: '0.8rem', fontWeight: '600' }}>
-                        {d.label} {d.price}
+              <div style={{ background: '#FDFBF3', borderRadius: '10px', border: '2px solid #E8D5A3', padding: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+                  <p style={{ margin: 0, fontWeight: '800', fontSize: '0.88rem', color: '#1A1A1A' }}>
+                    ③ Sizes &amp; Prices *
+                  </p>
+                  <span style={{ fontSize: '0.72rem', color: '#9CA3AF' }}>Add each size separately, then click + Add</span>
+                </div>
+
+                {/* Input row */}
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
+                  <input
+                    style={{ ...inputStyle, flex: '2 1 150px', borderColor: '#E8D5A3' }}
+                    placeholder="Size label  e.g.  100gm  /  50ml  /  Small"
+                    value={variantDraft.size_label}
+                    onChange={e => setVariantDraft(d => ({ ...d, size_label: e.target.value }))}
+                    onKeyDown={e => e.key === 'Enter' && addDraftVariant()} />
+                  <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E8D5A3', borderRadius: '8px', overflow: 'hidden', flex: '1 1 120px' }}>
+                    <span style={{ padding: '0.42rem 0.6rem', background: '#FDFBF3', borderRight: '1px solid #E8D5A3', fontWeight: '800', fontSize: '0.9rem', color: '#D4AF37' }}>₹</span>
+                    <input type="number" min="0" placeholder="Price"
+                      style={{ flex: 1, border: 'none', outline: 'none', padding: '0.42rem 0.6rem', fontSize: '0.85rem', color: '#1A1A1A', background: '#fff' }}
+                      value={variantDraft.price}
+                      onChange={e => setVariantDraft(d => ({ ...d, price: e.target.value }))}
+                      onKeyDown={e => e.key === 'Enter' && addDraftVariant()} />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addDraftVariant}
+                    style={{ background: '#D4AF37', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.42rem 1.1rem', fontWeight: '800', fontSize: '0.875rem', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                    + Add Size
+                  </button>
+                </div>
+
+                {/* Added variant tags */}
+                {newVariants.length === 0 ? (
+                  <p style={{ margin: 0, fontSize: '0.78rem', color: '#dc2626', fontWeight: '600' }}>
+                    ⚠️ You must add at least one size &amp; price before saving.
+                  </p>
+                ) : (
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {newVariants.map((v, i) => (
+                      <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: '#fff', color: '#1A1A1A', border: '1px solid #D4AF37', borderRadius: '999px', padding: '0.25rem 0.7rem', fontSize: '0.82rem', fontWeight: '700' }}>
+                        {v.size_label} — ₹{v.price}
+                        <button type="button" onClick={() => removeDraftVariant(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontWeight: '800', fontSize: '0.85rem', padding: 0, lineHeight: 1 }}>✕</button>
                       </span>
                     ))}
                   </div>
-                  <p style={{ margin: '0.4rem 0 0 0', fontSize: '0.78rem', color: '#0ea5e9' }}>You can modify these after adding the product.</p>
-                </div>
-              ) : (
-                // Custom variants builder
-                <div style={{ background: '#FDFBF3', borderRadius: '8px', border: '1px solid #E8D5A3', padding: '0.85rem' }}>
-                  <p style={{ margin: '0 0 0.6rem 0', fontWeight: '800', fontSize: '0.85rem', color: '#1A1A1A' }}>Size Variants *</p>
+                )}
+              </div>
+            )}
 
-                  {/* Draft input row */}
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <input style={{ ...inputStyle, flex: '1 1 120px' }} placeholder="Size (e.g. 6ml, Small)"
-                      value={variantDraft.size_label}
-                      onChange={e => setVariantDraft(d => ({ ...d, size_label: e.target.value }))}
-                      onKeyDown={e => e.key === 'Enter' && addDraftVariant()} />
-                    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E8D5A3', borderRadius: '8px', overflow: 'hidden', flex: '1 1 110px' }}>
-                      <span style={{ padding: '0.42rem 0.55rem', background: '#FDFBF3', borderRight: '1px solid #E8D5A3', fontWeight: '800', fontSize: '0.85rem', color: '#1A1A1A' }}>₹</span>
-                      <input type="number" min="0" placeholder="Price" style={{ flex: 1, border: 'none', outline: 'none', padding: '0.42rem 0.55rem', fontSize: '0.85rem', color: '#1A1A1A', background: '#fff' }}
-                        value={variantDraft.price}
-                        onChange={e => setVariantDraft(d => ({ ...d, price: e.target.value }))}
-                        onKeyDown={e => e.key === 'Enter' && addDraftVariant()} />
-                    </div>
-                    <button onClick={addDraftVariant} style={{ background: '#D4AF37', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.42rem 0.9rem', fontWeight: '800', fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add</button>
-                  </div>
-
-                  {/* Tags */}
-                  {newVariants.length > 0 && (
-                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.65rem' }}>
-                      {newVariants.map((v, i) => (
-                        <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: '#FDFBF3', color: '#D4AF37', border: '1px solid #E8D5A3', borderRadius: '999px', padding: '0.25rem 0.65rem', fontSize: '0.82rem', fontWeight: '700' }}>
-                          {v.size_label} — ₹{v.price}
-                          <button onClick={() => removeDraftVariant(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontWeight: '800', fontSize: '0.85rem', padding: 0, lineHeight: 1 }}>✕</button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )
+            {/* No category selected hint */}
+            {!form.category_id && (
+              <p style={{ margin: 0, fontSize: '0.8rem', color: '#9CA3AF', fontStyle: 'italic' }}>
+                ← Select a category first to set sizes &amp; prices.
+              </p>
             )}
 
             {/* Submit row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <Button onClick={handleAdd} style={{ background: '#D4AF37', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.5rem 1.4rem', fontWeight: '800', cursor: 'pointer', boxShadow: '0 2px 8px rgba(212,175,55,0.3)' }}>
-                Add Product
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', paddingTop: '0.25rem', borderTop: '1px solid #f3f4f6' }}>
+              <Button
+                onClick={handleAdd}
+                disabled={!form.name.trim() || !form.category_id}
+                style={{
+                  background: (form.name.trim() && form.category_id) ? '#D4AF37' : '#e5e7eb',
+                  color: (form.name.trim() && form.category_id) ? '#fff' : '#9ca3af',
+                  border: 'none', borderRadius: '8px', padding: '0.5rem 1.4rem',
+                  fontWeight: '800', cursor: (form.name.trim() && form.category_id) ? 'pointer' : 'not-allowed',
+                  boxShadow: (form.name.trim() && form.category_id) ? '0 2px 8px rgba(212,175,55,0.3)' : 'none'
+                }}>
+                ④ Add Product
               </Button>
               {error && <span style={{ color: '#dc2626', fontSize: '0.875rem', fontWeight: '600' }}>⚠️ {error}</span>}
+              {successMsg && <span style={{ color: '#16a34a', fontSize: '0.875rem', fontWeight: '700' }}>✅ {successMsg}</span>}
             </div>
           </CardContent>
         </Card>
+
 
         {/* ── GLOBAL OOS SUMMARY BAR ──────────────────────────────────── */}
         {!loading && globalOosCount > 0 && (
@@ -703,9 +729,14 @@ export default function ProductCatalogPage() {
                       {/* Top row: name left, buttons right */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
                         <div>
-                          <p style={{ margin: 0, fontWeight: '700', color: isOos ? '#991b1b' : '#111827', fontSize: '0.95rem' }}>
-                            {highlightMatch(product.name, searchTrimmed)}
-                          </p>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <p style={{ margin: 0, fontWeight: '700', color: isOos ? '#991b1b' : '#111827', fontSize: '0.95rem' }}>
+                              {highlightMatch(product.name, searchTrimmed)}
+                            </p>
+                            {product.product_variants.length === 0 && !isOos && (
+                              <span style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '999px', padding: '0.1rem 0.55rem', fontSize: '0.7rem', fontWeight: '800' }}>⚠️ No sizes set</span>
+                            )}
+                          </div>
                           <p style={{ margin: 0, fontSize: '0.78rem', color: '#9ca3af', marginTop: '0.1rem' }}>{product.category_name}</p>
                         </div>
                         {/* Action buttons */}
@@ -734,13 +765,25 @@ export default function ProductCatalogPage() {
                       </div>
 
                       {/* Variant chips */}
-                      {product.product_variants.length > 0 && (
+                      {product.product_variants.length > 0 ? (
                         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
                           {product.product_variants.map(v => (
                             <span key={v.id} style={{ background: '#f3f4f6', color: '#374151', borderRadius: '6px', padding: '0.15rem 0.55rem', fontSize: '0.78rem', fontWeight: '600' }}>
                               {variantLabel(v)} · ₹{v.price.toLocaleString('en-IN')}
                             </span>
                           ))}
+                        </div>
+                      ) : !isOos && (
+                        <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '0.45rem', padding: '0.45rem 0.75rem' }}>
+                          <span style={{ fontSize: '0.8rem', color: '#b91c1c', fontWeight: '600', flex: 1 }}>
+                            ⚠️ This product has no sizes or prices — it won&apos;t appear correctly in the sale screen.
+                          </span>
+                          <button
+                            onClick={() => openEdit(product)}
+                            style={{ background: '#dc2626', color: '#fff', border: 'none', borderRadius: '0.4rem', padding: '0.3rem 0.75rem', fontSize: '0.78rem', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                          >
+                            + Add Sizes &amp; Prices
+                          </button>
                         </div>
                       )}
                     </div>
@@ -857,8 +900,13 @@ export default function ProductCatalogPage() {
 
               {/* Existing variants */}
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: '700', color: '#374151', display: 'block', marginBottom: '0.5rem' }}>Size Variants</label>
-                {editVariants.length === 0 && <p style={{ color: '#9ca3af', fontSize: '0.85rem', margin: 0 }}>No variants yet.</p>}
+                <label style={{ fontSize: '0.8rem', fontWeight: '700', color: '#374151', display: 'block', marginBottom: '0.5rem' }}>Size Variants & Prices</label>
+                {editVariants.length === 0 && (
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '0.5rem', padding: '0.75rem 1rem', marginBottom: '0.75rem' }}>
+                    <p style={{ margin: '0 0 0.3rem', fontWeight: '800', fontSize: '0.875rem', color: '#92400e' }}>⚠️ No sizes or prices added yet!</p>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#78350f' }}>This product won&apos;t show sizes in the sale screen. Use the form below to add each size with its price, then click <strong>Save Changes</strong>.</p>
+                  </div>
+                )}
                 {editVariants.map((v) => (
                   <div key={v.id} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
                     <input style={{ ...inputStyle, flex: '1 1 100px' }}
@@ -876,19 +924,22 @@ export default function ProductCatalogPage() {
                 ))}
 
                 {/* Add new variant row */}
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.5rem', paddingTop: '0.7rem', borderTop: '1px dashed #e5e7eb' }}>
-                  <input style={{ ...inputStyle, flex: '1 1 100px' }} placeholder="Size (e.g. 50ml)"
-                    value={editNewDraft.size_label}
-                    onChange={e => setEditNewDraft(d => ({ ...d, size_label: e.target.value }))}
-                    onKeyDown={e => e.key === 'Enter' && addEditNewVariant()} />
-                  <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '0.4rem', overflow: 'hidden', flex: '1 1 100px' }}>
-                    <span style={{ padding: '0.42rem 0.55rem', background: '#f3f4f6', borderRight: '1px solid #d1d5db', fontWeight: '700', fontSize: '0.85rem', color: '#374151' }}>₹</span>
-                    <input type="number" min="0" placeholder="Price" style={{ flex: 1, border: 'none', outline: 'none', padding: '0.42rem 0.55rem', fontSize: '0.85rem', color: '#111827' }}
-                      value={editNewDraft.price}
-                      onChange={e => setEditNewDraft(d => ({ ...d, price: e.target.value }))}
+                <div style={{ background: '#FDFBF3', border: '1px solid #E8D5A3', borderRadius: '0.5rem', padding: '0.75rem', marginTop: '0.5rem' }}>
+                  <p style={{ margin: '0 0 0.5rem', fontSize: '0.78rem', fontWeight: '700', color: '#92400e' }}>➕ Add a size &amp; price (press Enter or click Add):</p>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input style={{ ...inputStyle, flex: '1 1 100px', borderColor: '#E8D5A3' }} placeholder="Size label (e.g. 6ml, 50gm, Small)"
+                      value={editNewDraft.size_label}
+                      onChange={e => setEditNewDraft(d => ({ ...d, size_label: e.target.value }))}
                       onKeyDown={e => e.key === 'Enter' && addEditNewVariant()} />
+                    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E8D5A3', borderRadius: '0.4rem', overflow: 'hidden', flex: '1 1 100px' }}>
+                      <span style={{ padding: '0.42rem 0.55rem', background: '#FDFBF3', borderRight: '1px solid #E8D5A3', fontWeight: '800', fontSize: '0.85rem', color: '#D4AF37' }}>₹</span>
+                      <input type="number" min="0" placeholder="Price" style={{ flex: 1, border: 'none', outline: 'none', padding: '0.42rem 0.55rem', fontSize: '0.85rem', color: '#111827', background: '#fff' }}
+                        value={editNewDraft.price}
+                        onChange={e => setEditNewDraft(d => ({ ...d, price: e.target.value }))}
+                        onKeyDown={e => e.key === 'Enter' && addEditNewVariant()} />
+                    </div>
+                    <button onClick={addEditNewVariant} style={{ background: '#D4AF37', color: '#fff', border: 'none', borderRadius: '0.4rem', padding: '0.42rem 0.85rem', fontWeight: '800', fontSize: '0.875rem', cursor: 'pointer', flexShrink: 0 }}>+ Add</button>
                   </div>
-                  <button onClick={addEditNewVariant} style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: '0.4rem', padding: '0.42rem 0.85rem', fontWeight: '700', fontSize: '0.85rem', cursor: 'pointer', flexShrink: 0 }}>+ Add</button>
                 </div>
               </div>
             </div>

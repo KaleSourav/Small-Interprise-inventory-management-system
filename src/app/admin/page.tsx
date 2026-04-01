@@ -49,6 +49,7 @@ export default function AdminDashboardPage() {
         const data = await storesRes.json();
         setStores(Array.isArray(data) ? data : []);
       }
+
       setLoading(false);
     }
     load();
@@ -106,14 +107,16 @@ export default function AdminDashboardPage() {
       .then(r => r.json())
       .then(async (fetchedStores) => {
         const allSalesData: any[] = []
-        for (const store of fetchedStores.filter((s:any) => s.is_active)) {
-          try {
-            const res = await fetch(`/api/sales?store_id=${store.id}&from=${from}&to=${to}`)
-            const sales = await res.json()
-            if (Array.isArray(sales)) {
-              sales.forEach(s => allSalesData.push({ ...s, store_name: store.name }))
-            }
-          } catch(e) {}
+        if (Array.isArray(fetchedStores)) {
+          for (const store of fetchedStores.filter((s:any) => s.is_active)) {
+            try {
+              const res = await fetch(`/api/sales?store_id=${store.id}&from=${from}&to=${to}`)
+              const sales = await res.json()
+              if (Array.isArray(sales)) {
+                sales.forEach(s => allSalesData.push({ ...s, store_name: store.name }))
+              }
+            } catch(e) {}
+          }
         }
 
         setAllSales(allSalesData)

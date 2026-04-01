@@ -12,6 +12,8 @@ export default function StoreProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchText, setSearchText] = useState('');
   const [outOfStockProducts, setOutOfStockProducts] = useState<Set<string>>(new Set());
+  const [globalOosProducts, setGlobalOosProducts] = useState<Set<string>>(new Set());
+  const [processingId, setProcessingId] = useState<string | null>(null);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [showOosDialog, setShowOosDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -58,13 +60,9 @@ export default function StoreProductsPage() {
         const statusRes = await fetch('/api/stock-status');
         if (statusRes.ok) {
           const statusData = await statusRes.json();
-          if (Array.isArray(statusData)) {
-            const blockedIds = new Set<string>(
-              statusData
-                .filter((s: any) => s.is_globally_oos)
-                .map((s: any) => s.id)
-            );
-            setOutOfStockProducts(blockedIds);
+          if (statusData && Array.isArray(statusData.blocked_products)) {
+            setOutOfStockProducts(new Set(statusData.blocked_products));
+            setGlobalOosProducts(new Set(statusData.global_oos_products || []));
           }
         }
       } catch (e) {
@@ -118,7 +116,7 @@ export default function StoreProductsPage() {
         // Optimistically update pending list
         setPendingRequests(prev => [
           ...prev,
-          { product_id: selectedProduct.id, status: 'pending' },
+          data,
         ]);
         setShowOosDialog(false);
         setSelectedProduct(null);
@@ -132,6 +130,50 @@ export default function StoreProductsPage() {
       setErrorMsg('Network error. Please try again.');
     }
     setOosLoading(false);
+  }
+
+  async function markAvailable(productId: string) {
+    if (!confirm('Mark this product as available again?')) return;
+    setProcessingId(productId);
+    try {
+      const res = await fetch(`/api/stock-status/${productId}`, { method: 'DELETE' });
+      if (res.ok) {
+        setOutOfStockProducts(prev => {
+          const next = new Set(prev);
+          next.delete(productId);
+          return next;
+        });
+        setSuccessMsg('Product is now available ✅');
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        const d = await res.json();
+        setErrorMsg(d.error || 'Failed to update');
+      }
+    } catch {
+      setErrorMsg('Network error');
+    }
+    setProcessingId(null);
+  }
+
+  async function cancelRequest(productId: string) {
+    const req = pendingRequests.find(r => r.product_id === productId && r.status === 'pending');
+    if (!req) return;
+    if (!confirm('Cancel your Out of Stock request?')) return;
+    setProcessingId(productId);
+    try {
+      const res = await fetch(`/api/stock-requests/${req.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setPendingRequests(prev => prev.filter(r => r.id !== req.id));
+        setSuccessMsg('Request cancelled ✅');
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        const d = await res.json();
+        setErrorMsg(d.error || 'Failed to cancel');
+      }
+    } catch {
+      setErrorMsg('Network error');
+    }
+    setProcessingId(null);
   }
 
   const pendingCount = pendingRequests.filter(r => r.status === 'pending').length;
@@ -187,6 +229,19 @@ export default function StoreProductsPage() {
         </div>
       )}
 
+      {/* ── ERROR TOAST ── */}
+      {errorMsg && (
+        <div style={{
+          position: 'fixed', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)',
+          background: '#dc2626', color: '#fff', padding: '0.65rem 1.5rem',
+          borderRadius: '999px', fontWeight: '700', fontSize: '0.9rem',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)', zIndex: 2000, whiteSpace: 'nowrap',
+          animation: 'fadeIn 0.2s ease-out'
+        }}>
+          {errorMsg}
+        </div>
+      )}
+
       {/* ── OOS DIALOG ── */}
       {showOosDialog && selectedProduct && (
         <div className="dialog-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowOosDialog(false); } }}>
@@ -221,7 +276,8 @@ export default function StoreProductsPage() {
                 width: '100%', border: '1px solid #d1d5db', borderRadius: '8px',
                 padding: '0.6rem 0.85rem', fontSize: '0.875rem', resize: 'vertical',
                 outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
-                marginBottom: '0.75rem', lineHeight: 1.5
+                marginBottom: '0.75rem', lineHeight: 1.5,
+                color: '#1A1A1A', background: '#fff'
               }}
               onFocus={e => (e.target.style.borderColor = '#D4AF37')}
               onBlur={e => (e.target.style.borderColor = '#d1d5db')}
@@ -467,22 +523,39 @@ export default function StoreProductsPage() {
 
                     {/* Action Button */}
                     {oos ? (
-                      <button disabled style={{
-                        padding: '0.4rem 0.9rem', borderRadius: '8px',
-                        border: '1px solid #e5e7eb', background: '#f9fafb',
-                        color: '#9ca3af', fontSize: '0.78rem', fontWeight: '600',
-                        cursor: 'not-allowed'
-                      }}>
-                        OOS Marked
-                      </button>
+                      globalOosProducts.has(product.id) ? (
+                        <button disabled style={{
+                          padding: '0.4rem 0.9rem', borderRadius: '8px',
+                          border: '1px solid #e5e7eb', background: '#f9fafb',
+                          color: '#9ca3af', fontSize: '0.78rem', fontWeight: '600',
+                          cursor: 'not-allowed'
+                        }}>
+                          Global OOS
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => markAvailable(product.id)}
+                          disabled={processingId === product.id}
+                          style={{
+                          padding: '0.4rem 0.9rem', borderRadius: '8px',
+                          border: '1px solid #bbf7d0', background: '#f0fdf4',
+                          color: '#166534', fontSize: '0.78rem', fontWeight: '700',
+                          cursor: processingId === product.id ? 'not-allowed' : 'pointer', transition: 'all 0.15s'
+                        }}>
+                          {processingId === product.id ? '...' : 'Mark Available'}
+                        </button>
+                      )
                     ) : pending ? (
-                      <button disabled style={{
+                      <button 
+                        onClick={() => cancelRequest(product.id)}
+                        disabled={processingId === product.id}
+                        style={{
                         padding: '0.4rem 0.9rem', borderRadius: '8px',
-                        border: '1px solid #e5e7eb', background: '#f9fafb',
-                        color: '#9ca3af', fontSize: '0.78rem', fontWeight: '600',
-                        cursor: 'not-allowed'
+                        border: '1px solid #fecaca', background: '#fef2f2',
+                        color: '#dc2626', fontSize: '0.78rem', fontWeight: '600',
+                        cursor: processingId === product.id ? 'not-allowed' : 'pointer', transition: 'all 0.15s'
                       }}>
-                        Request Sent
+                        {processingId === product.id ? '...' : 'Cancel Request'}
                       </button>
                     ) : (
                       <button

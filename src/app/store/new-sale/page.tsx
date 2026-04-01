@@ -19,9 +19,10 @@ import { downloadInvoicePDF, printInvoice, sendWhatsApp } from '@/lib/invoice-ge
 interface Category { id: string; name: string; }
 
 interface Variant {
-  id:      string;
-  size_ml: number;
-  price:   number;
+  id:         string;
+  size_ml:    number | null;
+  size_label: string | null;
+  price:      number;
 }
 
 interface Product {
@@ -33,11 +34,12 @@ interface Product {
 }
 
 interface SelectedVariant {
-  variant_id: string;
-  size_ml:    number;
-  price:      number;
-  quantity:   number;
-  discount:   number;
+  variant_id:  string;
+  size_ml:     number | null;
+  size_label:  string | null;
+  price:       number;
+  quantity:    number;
+  discount:    number;
 }
 
 interface CartItem {
@@ -45,7 +47,8 @@ interface CartItem {
   product_name:    string;
   category_name:   string;
   variant_id:      string;
-  size_ml:         number;
+  size_ml:         number | null;
+  size_label:      string | null;
   mrp:             number;
   quantity:        number;
   discount_amount: number;
@@ -72,6 +75,7 @@ export default function NewSalePage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productSearch,   setProductSearch]   = useState('');
   const [loadingProducts, setLoadingProducts] = useState(false);
+  const [loadingVariants, setLoadingVariants] = useState(false);
 
   // Variant selection (multi-select)
   const [selectedVariants, setSelectedVariants] = useState<Record<string, SelectedVariant>>({});
@@ -110,11 +114,9 @@ export default function NewSalePage() {
       const res  = await fetch('/api/stock-status');
       if (res.ok) {
         const data = await res.json();
-        // blocked_products is already the union of global OOS + store OOS (minus exemptions)
-        const ids: string[] = Array.isArray(data.blocked_products)
-          ? data.blocked_products.map((p: { product_id: string }) => p.product_id)
-          : [];
-        setBlockedProducts(new Set(ids));
+        if (data && Array.isArray(data.blocked_products)) {
+          setBlockedProducts(new Set(data.blocked_products));
+        }
       }
     } catch { /* silent */ }
   }
@@ -125,14 +127,14 @@ export default function NewSalePage() {
     fetchBlockedStatus();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Fetch products when category changes ──────────────────────────────────────
+  // ── Fetch products when category changes (always fresh from DB) ──────────────────
   useEffect(() => {
     if (!selectedCatId) { setProducts([]); return; }
     setSelectedProduct(null);
     setSelectedVariants({});
     setProductSearch('');
     setLoadingProducts(true);
-    fetch(`/api/products?category_id=${selectedCatId}`)
+    fetch(`/api/products?category_id=${selectedCatId}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(d => setProducts(Array.isArray(d) ? d : []))
       .finally(() => setLoadingProducts(false));
@@ -187,7 +189,7 @@ export default function NewSalePage() {
         delete next[v.id];
         return next;
       }
-      return { ...prev, [v.id]: { variant_id: v.id, size_ml: v.size_ml, price: v.price, quantity: 1, discount: 0 } };
+      return { ...prev, [v.id]: { variant_id: v.id, size_ml: v.size_ml, size_label: v.size_label, price: v.price, quantity: 1, discount: 0 } };
     });
   }
 
@@ -208,6 +210,7 @@ export default function NewSalePage() {
       category_name:   catName,
       variant_id:      sv.variant_id,
       size_ml:         sv.size_ml,
+      size_label:      sv.size_label,
       mrp:             sv.price,
       quantity:        Math.max(1, sv.quantity),
       discount_amount: sv.discount * Math.max(1, sv.quantity),
@@ -227,6 +230,7 @@ export default function NewSalePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!customerName.trim()) { alert('Please enter customer name'); return; }
+    if (!customerPhone.trim()) { alert('Please enter customer phone number'); return; }
     if (cartItems.length === 0) { alert('Cart is empty'); return; }
 
     setSubmitting(true);
@@ -508,8 +512,8 @@ export default function NewSalePage() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div>
-                  <Label htmlFor="cphone" style={{ color: '#1A1A1A', fontWeight: '600' }}>Phone (optional)</Label>
-                  <Input id="cphone" type="tel" placeholder="Mobile number" value={customerPhone}
+                  <Label htmlFor="cphone" style={{ color: '#1A1A1A', fontWeight: '600' }}>Phone *</Label>
+                  <Input id="cphone" type="tel" placeholder="Mobile number" value={customerPhone} required
                     onChange={e => setCustomerPhone(e.target.value)} style={{ marginTop: '0.3rem', background: '#fff', color: '#1A1A1A', borderColor: '#E8D5A3' }} />
                 </div>
                 <div>
@@ -568,11 +572,25 @@ export default function NewSalePage() {
                       return (
                         <div
                           key={p.id}
-                          onClick={() => {
+                          onClick={async () => {
                             if (blocked) { setOosClickedId(p.id); return; }
                             setOosClickedId(null);
-                            setSelectedProduct(p);
                             setSelectedVariants({});
+                            // Always fetch fresh variants from DB when selecting a product
+                            setLoadingVariants(true);
+                            try {
+                              const varRes = await fetch(`/api/variants?product_id=${p.id}`, { cache: 'no-store' });
+                              if (varRes.ok) {
+                                const freshVars = await varRes.json();
+                                setSelectedProduct({ ...p, product_variants: Array.isArray(freshVars) ? freshVars : p.product_variants });
+                              } else {
+                                setSelectedProduct(p);
+                              }
+                            } catch {
+                              setSelectedProduct(p);
+                            } finally {
+                              setLoadingVariants(false);
+                            }
                           }}
                           style={{
                             display: 'flex', flexDirection: 'column',
@@ -668,9 +686,14 @@ export default function NewSalePage() {
                   ) : (
                     /* Variants section */
                     <>
-                      {(!selectedProduct.product_variants || selectedProduct.product_variants.length === 0) ? (
-                    <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>No sizes available for this product.</p>
-                  ) : (
+                      {loadingVariants ? (
+                        <div style={{ textAlign: 'center', padding: '1.5rem', color: '#D4AF37' }}>
+                          <span style={{ fontSize: '1.2rem' }}>⏳</span>
+                          <p style={{ margin: '0.3rem 0 0', fontSize: '0.82rem', color: '#9ca3af' }}>Loading sizes…</p>
+                        </div>
+                      ) : (!selectedProduct.product_variants || selectedProduct.product_variants.length === 0) ? (
+                        <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>No sizes available for this product.</p>
+                    ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.6rem' }}>
                       {selectedProduct.product_variants.map(v => {
                         const sv = selectedVariants[v.id];
@@ -689,7 +712,7 @@ export default function NewSalePage() {
                               {isSelected && (
                                 <span style={{ position: 'absolute', top: '0.35rem', right: '0.4rem', background: '#D4AF37', color: '#fff', borderRadius: '50%', width: '1.1rem', height: '1.1rem', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800' }}>✓</span>
                               )}
-                              <p style={{ fontWeight: '800', fontSize: '1.1rem', color: '#1A1A1A', margin: '0 0 0.2rem' }}>{v.size_ml} ml</p>
+                              <p style={{ fontWeight: '800', fontSize: '1.1rem', color: '#1A1A1A', margin: '0 0 0.2rem' }}>{v.size_label ? v.size_label : v.size_ml ? `${v.size_ml}ml` : '—'}</p>
                               <p style={{ fontWeight: '700', fontSize: '0.9rem', color: '#6B6B6B', margin: 0 }}>₹{fmtInt(v.price)}</p>
                               <p style={{ fontSize: '0.7rem', color: isSelected ? '#D4AF37' : '#9CA3AF', marginTop: '0.35rem', fontWeight: '800' }}>
                                 {isSelected ? '✓ Selected' : 'Tap to select'}
@@ -793,7 +816,7 @@ export default function NewSalePage() {
                         const globalIdx = cartItems.indexOf(item);
                         return (
                           <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.85rem', borderBottom: idx < items.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
-                            <span style={{ fontSize: '0.8rem', color: '#374151', minWidth: '45px', fontWeight: '600' }}>{item.size_ml}ml</span>
+                            <span style={{ fontSize: '0.8rem', color: '#374151', minWidth: '45px', fontWeight: '600' }}>{item.size_label ? item.size_label : item.size_ml ? `${item.size_ml}ml` : '—'}</span>
                             <span style={{ fontSize: '0.78rem', color: '#6b7280', flex: 1 }}>× {item.quantity} @ ₹{fmtInt(item.mrp)}</span>
                             {item.discount_amount > 0 && (
                               <span style={{ fontSize: '0.75rem', color: '#dc2626' }}>−₹{fmtInt(item.discount_amount)}</span>

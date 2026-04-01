@@ -1,26 +1,30 @@
-import { getUserFromToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
 // ── DELETE /api/stock-status/[productId]?store_id=<uuid> ─────────────────────
-// Superadmin re-enables a product that was previously marked OOS for a store
+// Superadmin or Store re-enables a product that was previously marked OOS for a store.
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ productId: string }> }
 ) {
-  const user = await getUserFromToken();
-  if (!user || user.role !== 'superadmin') {
+  const token = req.cookies.get('auth_token')?.value;
+  const user  = token ? verifyToken(token) : null;
+  if (!user || !['superadmin', 'store'].includes(user.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { productId } = await params;
-  const storeId = new URL(req.url).searchParams.get('store_id');
+  let storeId = '';
 
-  if (!storeId) {
-    return NextResponse.json(
-      { error: 'store_id query param is required' },
-      { status: 400 }
-    );
+  if (user.role === 'superadmin') {
+    storeId = new URL(req.url).searchParams.get('store_id') || '';
+    if (!storeId) {
+      return NextResponse.json({ error: 'store_id query param is required' }, { status: 400 });
+    }
+  } else {
+    // For store users, they can only unmark their own store
+    storeId = user.store_id;
   }
 
   const { error } = await supabase

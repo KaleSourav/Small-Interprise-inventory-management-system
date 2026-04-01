@@ -1,13 +1,14 @@
-import { getUserFromToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
 // ── DELETE /api/categories/[id] ───────────────────────────────────────────────
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = await getUserFromToken();
+  const token = req.cookies.get('auth_token')?.value;
+  const user  = token ? verifyToken(token) : null;
   if (!user || user.role !== 'superadmin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

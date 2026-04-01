@@ -533,6 +533,7 @@ export default function StoreNotificationsPage() {
                   {requests.map(req => (
                     <Card key={req.id} style={{
                       borderRadius: '0.75rem',
+                      background: '#fff',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
                       borderLeft: req.status === 'accepted' ? '4px solid #16a34a'
                                 : req.status === 'rejected' ? '4px solid #dc2626'

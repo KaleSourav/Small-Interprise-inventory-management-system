@@ -16,9 +16,10 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('product_variants')
-    .select('id, size_ml, size_label, price')
+    .select('id, size_ml, size_label, price, is_active')
     .eq('product_id', productId)
-    .order('price', { ascending: true });
+    .eq('is_active', true)
+    .order('size_ml', { ascending: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

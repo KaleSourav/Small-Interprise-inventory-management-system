@@ -1,14 +1,7 @@
-import { getUserFromToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Default variants for Perfume category (15ml, 30ml, 50ml, 100ml)
-const PERFUME_DEFAULT_VARIANTS = [
-  { size_ml: 15,  price: 300  },
-  { size_ml: 30,  price: 550  },
-  { size_ml: 50,  price: 750  },
-  { size_ml: 100, price: 1300 }
-];
 
 // ── GET /api/products?category_id=<uuid>&name=<search> ────────────────────────
 export async function GET(req: NextRequest) {
@@ -24,11 +17,13 @@ export async function GET(req: NextRequest) {
       mrp,
       is_active,
       category_id,
-      categories ( name ),
+      categories ( id, name ),
       product_variants (
         id,
         size_ml,
-        price
+        size_label,
+        price,
+        is_active
       )
     `)
     .eq('is_active', true)
@@ -45,14 +40,18 @@ export async function GET(req: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
+    console.error('Products GET error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Sort each product's variants by size_ml ascending
-  const products = (data ?? []).map(p => ({
+  // Normalize and sort each product's variants by size_ml ascending
+  const products = (data ?? []).map((p: any) => ({
     ...p,
+    category_name: (p.categories as any)?.name ?? '',
     product_variants: Array.isArray(p.product_variants)
-      ? [...p.product_variants].sort((a, b) => a.size_ml - b.size_ml)
+      ? [...p.product_variants]
+          .filter((v: any) => v.is_active !== false)
+          .sort((a: any, b: any) => (a.size_ml ?? 0) - (b.size_ml ?? 0))
       : []
   }));
 
@@ -62,12 +61,17 @@ export async function GET(req: NextRequest) {
 // ── POST /api/products ─────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   // Only superadmin can create products
-  const user = await getUserFromToken();
+  // Read token directly from req.cookies — more reliable than getUserFromToken() in POST handlers
+  const token = req.cookies.get('auth_token')?.value;
+  if (!token) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  const user = verifyToken(token);
   if (!user || user.role !== 'superadmin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { name, category_id, variants } = await req.json();
+  const { name, category_id, variants, mrp } = await req.json();
 
   if (!name || !category_id) {
     return NextResponse.json(
@@ -77,60 +81,74 @@ export async function POST(req: NextRequest) {
   }
 
   // ── 1. Insert the product ────────────────────────────────────────────────
-  // mrp is set to 0 as a placeholder; real prices live in product_variants
   const { data: product, error: productError } = await supabase
     .from('products')
-    .insert({ name, category_id, mrp: 0 })
+    .insert({ name: name.trim(), category_id, mrp: mrp || 0, is_active: true })
     .select()
     .single();
 
-  if (productError) {
-    return NextResponse.json({ error: productError.message }, { status: 500 });
+  if (productError || !product) {
+    console.error('Product insert error:', productError);
+    return NextResponse.json(
+      { error: productError?.message || 'Failed to create product' },
+      { status: 500 }
+    );
   }
 
-  // ── 2. Determine which variants to create ────────────────────────────────
-  let variantsToInsert: { product_id: string; size_ml: number; price: number }[] = [];
+  console.log('Product created:', product.id, product.name);
+
+  // ── 2. Insert variants from the form (universal for ALL categories) ─────────
+  let variantsToInsert: {
+    product_id: string;
+    size_ml: number | null;
+    size_label: string;
+    price: number;
+    is_active: boolean;
+  }[] = [];
 
   if (Array.isArray(variants) && variants.length > 0) {
-    // Use provided variants
-    variantsToInsert = variants.map((v: { size_ml: number; price: number }) => ({
-      product_id: product.id,
-      size_ml:    v.size_ml,
-      price:      v.price
-    }));
-  } else {
-    // Check if category is "Perfume" by looking up the category name
-    const { data: categoryData } = await supabase
-      .from('categories')
-      .select('name')
-      .eq('id', category_id)
-      .single();
-
-    if (categoryData?.name?.toLowerCase() === 'perfume') {
-      variantsToInsert = PERFUME_DEFAULT_VARIANTS.map(v => ({
+    variantsToInsert = variants.map((v: any) => {
+      const rawLabel = v.size_label?.trim() || v.size?.trim() || '';
+      const computedLabel = rawLabel
+        ? rawLabel
+        : v.size_ml
+          ? `${v.size_ml}ml`
+          : `₹${Number(v.price) || 0}`;
+      return {
         product_id: product.id,
-        ...v
-      }));
-    }
+        size_ml:    v.size_ml ?? null,
+        size_label: computedLabel,
+        price:      Number(v.price) || 0,
+        is_active:  true
+      };
+    });
   }
 
+  console.log('Variants to insert:', variantsToInsert.length);
+
   // ── 3. Insert variants if any ────────────────────────────────────────────
-  let insertedVariants: { id: string; size_ml: number; price: number }[] = [];
+  let insertedVariants: { id: string; size_ml: number | null; size_label: string | null; price: number }[] = [];
   if (variantsToInsert.length > 0) {
     const { data: variantData, error: variantError } = await supabase
       .from('product_variants')
       .insert(variantsToInsert)
-      .select('id, size_ml, price');
+      .select('id, size_ml, size_label, price');
 
     if (variantError) {
+      console.error('Variant insert error code:', variantError.code);
+      console.error('Variant insert error message:', variantError.message);
+      console.error('Variant insert error details:', variantError.details);
+      console.error('Variant insert error hint:', variantError.hint);
+      console.error('Variants attempted:', JSON.stringify(variantsToInsert));
       // Product was created — return it with a warning rather than failing hard
       return NextResponse.json(
-        { ...product, product_variants: [], warning: variantError.message },
+        { ...product, product_variants: [], warning: 'Product created but variants failed: ' + variantError.message + ' | code: ' + variantError.code },
         { status: 201 }
       );
     }
 
-    insertedVariants = (variantData ?? []).sort((a, b) => a.size_ml - b.size_ml);
+    console.log('Variants inserted:', variantData?.length);
+    insertedVariants = (variantData ?? []).sort((a: any, b: any) => (a.size_ml ?? 0) - (b.size_ml ?? 0));
   }
 
   return NextResponse.json(

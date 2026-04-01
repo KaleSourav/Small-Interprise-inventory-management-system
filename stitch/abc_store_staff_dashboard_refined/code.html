@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ABC Store — Mumbai | Luxury Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#D4AF37",
+                        "background-light": "#FAFAFA",
+                        "background-dark": "#1A1A1A",
+                        "luxury-gold": "#D4AF37",
+                        "marble-white": "#FFFFFF",
+                        "charcoal": "#333333"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "2px",
+                        "xl": "4px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .gold-shadow {
+            box-shadow: 0 4px 20px -2px rgba(212, 175, 55, 0.1);
+        }
+        .gold-shadow-hover:hover {
+            box-shadow: 0 10px 30px -5px rgba(212, 175, 55, 0.25);
+            transform: translateY(-2px);
+        }
+        .luxury-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #B6932F 100%);
+        }
+        .section-accent {
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .section-accent::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 1px;
+            background-color: #D4AF37;
+        }
+        .marble-bg {
+            background-color: #ffffff;
+            background-image: radial-gradient(#f0f0f0 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased marble-bg">
+<div class="relative flex min-h-screen w-full flex-col">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between border-b border-primary/20 bg-white/90 backdrop-blur-md px-8 py-5 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary">
+<span class="material-symbols-outlined text-3xl">fluid_med</span>
+</div>
+<h1 class="font-serif text-2xl font-bold tracking-tight text-slate-900">ABC Store — Mumbai</h1>
+</div>
+<div class="flex items-center gap-8">
+<div class="hidden md:flex items-center gap-2">
+<span class="text-sm font-medium text-slate-400">Good Morning! 🌸</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 pr-6 border-r border-slate-100">
+<div class="text-right">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Staff Access</p>
+<p class="text-sm text-charcoal font-semibold">Ananya Sharma</p>
+</div>
+<div class="size-10 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Staff profile portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBej5gzZfWpTPUwKGpBA-3JYlTvAteK-GKw7nMNSaVOEce2a0pQ9fJL68Gqu2oIHzuD0e4F5Ke-ZSl9pb8fzfGAAus7a90y38BW_AV5UVT47aQXwacItr5aSTlk7zJbDY-mTzcAsx3jMYJbmFTJRWxI7s0HNWWRnTxmsGRFZwDgtyyZq1jpkpFC6SAMnqkGgWB2Y_09rD2tDiz4EZ5Oe8wz86oLPlvjXfro-tXFLFIe9GSG8LT_QJ7dxaBArKJyaO8duFOVM6MQzbY"/>
+</div>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white transition-all duration-500 rounded-sm text-[11px] font-bold uppercase tracking-[0.15em]">
+<span class="material-symbols-outlined text-sm">logout</span>
+                            Logout
+                        </button>
+</div>
+</div>
+</header>
+<main class="max-w-[1400px] mx-auto w-full p-8 space-y-12">
+<!-- Today's Summary -->
+<section class="space-y-6">
+<h2 class="font-serif text-lg text-charcoal section-accent">Overview</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Revenue Card -->
+<div class="bg-white p-6 rounded-sm gold-shadow gold-shadow-hover border border-primary/5 transition-all duration-300">
+<p class="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Today's Revenue</p>
+<h3 class="text-primary text-[36px] font-bold mt-2">₹12,500</h3>
+<div class="mt-6">
+<p class="text-slate-400 text-[11px] mb-3 uppercase tracking-tighter">7-day performance</p>
+<div class="flex items-end gap-1.5 h-10">
+<div class="w-full bg-primary/10 h-3 rounded-t-sm"></div>
+<div class="w-full bg-primary/10 h-5 rounded-t-sm"></div>
+<div class="w-full bg-primary/30 h-4 rounded-t-sm"></div>
+<div class="w-full bg-primary/50 h-6 rounded-t-sm"></div>
+<div class="w-full bg-primary/30 h-5 rounded-t-sm"></div>
+<div class="w-full bg-primary/70 h-7 rounded-t-sm"></div>
+<div class="w-full bg-primary h-9 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+<!-- Transactions Card -->
+<div class="bg-white p-6 rounded-sm gold-shadow gold-shadow-hover border border-primary/5 transition-all duration-300">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Transactions</p>
+<h3 class="text-charcoal text-[36px] font-bold mt-2">14 Sales</h3>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">receipt_long</span>
+</div>
+<div class="mt-6 flex items-center gap-1.5 text-emerald-600">
+<span class="material-symbols-outlined text-sm font-bold">trending_up</span>
+<p class="text-[13px] font-semibold">+3 more than yesterday</p>
+</div>
+</div>
+<!-- Biggest Sale -->
+<div class="bg-white p-6 rounded-sm gold-shadow gold-shadow-hover border border-primary/5 transition-all duration-300">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Biggest Sale Today</p>
+<h3 class="text-charcoal text-[36px] font-bold mt-2">₹2,900</h3>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">star</span>
+</div>
+<p class="mt-6 text-[13px] text-slate-500 italic font-serif">Sourav Kale — AMOUAGE INTERLUDE</p>
+</div>
+<!-- Most Sold -->
+<div class="bg-white p-6 rounded-sm gold-shadow gold-shadow-hover border border-primary/5 transition-all duration-300">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Most Sold Today</p>
+<h3 class="text-charcoal text-[22px] font-bold mt-2 truncate font-serif">DIOR SAUVAGE</h3>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">local_fire_department</span>
+</div>
+<p class="mt-8 text-[13px] text-slate-500 uppercase tracking-tight">5 units sold today</p>
+</div>
+</div>
+</section>
+<!-- Action Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="luxury-gradient rounded-sm p-8 flex items-center justify-between text-white group cursor-pointer gold-shadow-hover transition-all duration-500">
+<div class="flex items-center gap-8">
+<div class="bg-white/10 p-5 border border-white/20">
+<span class="material-symbols-outlined text-4xl">payments</span>
+</div>
+<div>
+<h2 class="font-serif text-[32px] font-bold tracking-wide">New Sale</h2>
+<p class="text-white/70 font-medium tracking-[0.2em] text-[11px] mt-2 uppercase">Record a Transaction</p>
+</div>
+</div>
+<div class="bg-white text-primary rounded-full size-14 flex items-center justify-center group-hover:translate-x-3 transition-all duration-500">
+<span class="material-symbols-outlined font-bold text-2xl">arrow_forward</span>
+</div>
+</div>
+<div class="bg-white border-2 border-primary/40 rounded-sm p-8 flex items-center justify-between group cursor-pointer gold-shadow-hover transition-all duration-500">
+<div class="flex items-center gap-8">
+<div class="bg-primary/5 p-5 border border-primary/10">
+<span class="material-symbols-outlined text-4xl text-primary">analytics</span>
+</div>
+<div>
+<h2 class="font-serif text-[32px] font-bold tracking-wide text-charcoal">Sales History</h2>
+<p class="text-slate-400 font-medium tracking-[0.2em] text-[11px] mt-2 uppercase">View Past Performance</p>
+</div>
+</div>
+<div class="bg-primary text-white rounded-full size-14 flex items-center justify-center group-hover:translate-x-3 transition-all duration-500">
+<span class="material-symbols-outlined font-bold text-2xl">arrow_forward</span>
+</div>
+</div>
+</section>
+<!-- Transactions and Notifications -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<!-- Today's Transactions List -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex justify-between items-end section-accent">
+<h2 class="font-serif text-2xl font-bold text-charcoal">Today's Sales</h2>
+<span class="text-[11px] font-bold text-primary tracking-widest uppercase">14 New Records</span>
+</div>
+<div class="bg-white rounded-sm gold-shadow border border-primary/5 overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50/50 text-slate-400 uppercase text-[10px] font-bold tracking-[0.2em] border-b border-primary/10">
+<th class="px-6 py-5">Time</th>
+<th class="px-6 py-5">Customer</th>
+<th class="px-6 py-5">Product</th>
+<th class="px-6 py-5">Size</th>
+<th class="px-6 py-5">Amount</th>
+<th class="px-6 py-5 text-right">Discount</th>
+</tr>
+</thead>
+<tbody class="text-charcoal text-[14px]">
+<tr class="border-b border-slate-50 hover:bg-[#FEFBF0] transition-colors duration-300">
+<td class="px-6 py-5 text-slate-400 text-[13px]">10:30 AM</td>
+<td class="px-6 py-5 font-semibold">Sourav Kale</td>
+<td class="px-6 py-5 text-slate-600">Amouage Interlude</td>
+<td class="px-6 py-5"><span class="bg-slate-50 text-slate-400 border border-slate-100 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase">100ml</span></td>
+<td class="px-6 py-5 font-bold">₹2,900</td>
+<td class="px-6 py-5 text-right text-[12px] text-slate-300">—</td>
+</tr>
+<tr class="border-b border-slate-50 hover:bg-[#FEFBF0] transition-colors duration-300">
+<td class="px-6 py-5 text-slate-400 text-[13px]">11:15 AM</td>
+<td class="px-6 py-5 font-semibold">Ananya Iyer</td>
+<td class="px-6 py-5 text-slate-600">Dior Sauvage</td>
+<td class="px-6 py-5"><span class="bg-slate-50 text-slate-400 border border-slate-100 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase">50ml</span></td>
+<td class="px-6 py-5 font-bold">₹1,200</td>
+<td class="px-6 py-5 text-right text-[12px] text-emerald-600 font-bold">5%</td>
+</tr>
+<tr class="border-b border-slate-50 hover:bg-[#FEFBF0] transition-colors duration-300">
+<td class="px-6 py-5 text-slate-400 text-[13px]">12:00 PM</td>
+<td class="px-6 py-5 font-semibold">Rahul Mehta</td>
+<td class="px-6 py-5 text-slate-600">Chanel Bleu</td>
+<td class="px-6 py-5"><span class="bg-slate-50 text-slate-400 border border-slate-100 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase">150ml</span></td>
+<td class="px-6 py-5 font-bold">₹1,800</td>
+<td class="px-6 py-5 text-right text-[12px] text-slate-300">—</td>
+</tr>
+<tr class="hover:bg-[#FEFBF0] transition-colors duration-300">
+<td class="px-6 py-5 text-slate-400 text-[13px]">12:45 PM</td>
+<td class="px-6 py-5 font-semibold">Priya Sharma</td>
+<td class="px-6 py-5 text-slate-600">Tom Ford Black Orchid</td>
+<td class="px-6 py-5"><span class="bg-slate-50 text-slate-400 border border-slate-100 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase">50ml</span></td>
+<td class="px-6 py-5 font-bold">₹4,500</td>
+<td class="px-6 py-5 text-right text-[12px] text-slate-300">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Notifications & Secondary Stats -->
+<div class="space-y-8">
+<div class="bg-white rounded-sm gold-shadow border border-primary/10 overflow-hidden">
+<div class="p-6 border-b border-primary/10 flex justify-between items-center bg-slate-50/30">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">campaign</span>
+<h2 class="font-serif text-[18px] font-bold text-charcoal">Notifications</h2>
+</div>
+<span class="bg-red-500 text-white text-[10px] font-bold size-5 flex items-center justify-center rounded-full">2</span>
+</div>
+<div class="p-6 space-y-5">
+<div class="flex gap-4 p-4 bg-orange-50/40 rounded-sm border border-orange-100/50">
+<span class="material-symbols-outlined text-orange-500 shrink-0 text-xl">warning</span>
+<div>
+<p class="text-[11px] font-bold text-orange-900 uppercase tracking-wider">Out of Stock</p>
+<p class="text-[13px] text-orange-700/80 mt-1 leading-relaxed">Dior Sauvage 100ml is unavailable. Restock pending.</p>
+<p class="text-[10px] text-orange-400 mt-2 uppercase">10 mins ago</p>
+</div>
+</div>
+<div class="flex gap-4 p-4 bg-emerald-50/40 rounded-sm border border-emerald-100/50">
+<span class="material-symbols-outlined text-emerald-500 shrink-0 text-xl">check_circle</span>
+<div>
+<p class="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Restock Alert</p>
+<p class="text-[13px] text-emerald-700/80 mt-1 leading-relaxed">Chanel N°5 50ml verified. Now available for sale.</p>
+<p class="text-[10px] text-emerald-400 mt-2 uppercase">1 hour ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Stats Row -->
+<div class="space-y-4">
+<div class="bg-white p-6 rounded-sm gold-shadow border border-primary/5 flex items-center gap-5 gold-shadow-hover transition-all duration-300">
+<div class="bg-primary/5 p-3 text-primary border border-primary/10">
+<span class="material-symbols-outlined">calendar_view_week</span>
+</div>
+<div>
+<p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.1em]">Weekly Revenue</p>
+<p class="text-[20px] font-bold text-charcoal">₹84,200</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-sm gold-shadow border border-primary/5 flex items-center gap-5 gold-shadow-hover transition-all duration-300">
+<div class="bg-primary/5 p-3 text-primary border border-primary/10">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<div>
+<p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.1em]">Monthly Revenue</p>
+<p class="text-[20px] font-bold text-charcoal">₹3,42,000</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-sm gold-shadow border border-primary/5 flex items-center gap-5 gold-shadow-hover transition-all duration-300">
+<div class="bg-primary/5 p-3 text-primary border border-primary/10">
+<span class="material-symbols-outlined">diamond</span>
+</div>
+<div>
+<p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.1em]">Best Seller</p>
+<p class="text-[20px] font-bold text-charcoal font-serif">CHANEL NO.5</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

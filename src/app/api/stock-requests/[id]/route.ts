@@ -1,4 +1,4 @@
-import { getUserFromToken } from '@/lib/auth';
+import { getUserFromToken, verifyToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -75,4 +75,49 @@ export async function PATCH(
   // ── If rejected → leave store_product_status untouched (product stays live)
 
   return NextResponse.json(data);
+}
+
+// ── DELETE /api/stock-requests/[id] ──────────────────────────────────────────
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const token = req.cookies.get('auth_token')?.value;
+  const user  = token ? verifyToken(token) : null;
+  
+  if (!user || user.role !== 'store') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  // Only allow deleting if it belongs to this store and is 'pending'
+  const { data: request, error: fetchError } = await supabase
+    .from('stock_requests')
+    .select('id, status, store_id')
+    .eq('id', id)
+    .single();
+
+  if (fetchError || !request) {
+    return NextResponse.json({ error: 'Request not found' }, { status: 404 });
+  }
+
+  if (request.store_id !== user.store_id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+
+  if (request.status !== 'pending') {
+    return NextResponse.json({ error: 'Can only cancel pending requests' }, { status: 400 });
+  }
+
+  const { error: deleteError } = await supabase
+    .from('stock_requests')
+    .delete()
+    .eq('id', id);
+
+  if (deleteError) {
+    return NextResponse.json({ error: deleteError.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true, message: 'Request cancelled' });
 }
