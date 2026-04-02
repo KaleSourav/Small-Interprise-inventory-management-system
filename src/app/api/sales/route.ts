@@ -77,7 +77,16 @@ export async function POST(req: NextRequest) {
 
   // Use client-supplied final_price (already computed after per-item discounts).
   // Fall back to recalculating only if not provided.
-  const final_price = body_final_price ?? (mrp_at_sale - (discount_amount || 0));
+  const price_after_item_discount = body_final_price ?? (mrp_at_sale - (discount_amount || 0));
+
+  // Apply the overall discount percentage ON TOP of the per-item discounts.
+  // This ensures final_price stored in DB = the true amount actually paid.
+  const overall_discount_amount =
+    overall_discount_percent > 0
+      ? Math.round((price_after_item_discount * overall_discount_percent) / 100)
+      : 0;
+
+  const final_price = price_after_item_discount - overall_discount_amount;
 
   // Today's date as YYYY-MM-DD
   const sale_date = new Date().toISOString().split('T')[0];
@@ -96,7 +105,7 @@ export async function POST(req: NextRequest) {
       size_ml:                    size_ml                 ?? null,
       quantity:                   quantity                ?? 1,
       mrp_at_sale,
-      discount_amount:            discount_amount         || 0,
+      discount_amount:            (discount_amount || 0) + overall_discount_amount,
       final_price,
       overall_discount_percent:   overall_discount_percent || 0,
       sale_date,
