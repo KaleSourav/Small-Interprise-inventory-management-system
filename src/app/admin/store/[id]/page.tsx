@@ -126,7 +126,7 @@ export default function AdminStoreViewPage() {
       `}</style>
 
       {/* HEADER */}
-      <header style={{ position:'sticky', top:0, zIndex:50, background:'rgba(255,255,255,0.92)', backdropFilter:'blur(12px)', borderBottom:'1px solid rgba(212,175,55,0.2)', padding:'1rem 3rem', display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:'1rem' }}>
+      <header style={{ position:'sticky', top:0, zIndex:50, background:'rgba(255,255,255,0.92)', backdropFilter:'blur(12px)', borderBottom:'1px solid rgba(212,175,55,0.2)', padding:'0.75rem 1rem', display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:'0.75rem' }}>
         {/* Left */}
         <div style={{ display:'flex', alignItems:'center', gap:'2rem' }}>
           <button onClick={() => router.back()} style={{ display:'flex', alignItems:'center', gap:'0.5rem', background:'transparent', border:'none', cursor:'pointer', color:'#D4AF37', fontSize:'0.7rem', fontWeight:'700', letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Inter,sans-serif' }}>
@@ -134,9 +134,9 @@ export default function AdminStoreViewPage() {
           </button>
           <div style={{ width:'1px', height:'2.5rem', background:'rgba(212,175,55,0.2)' }} />
           <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
-            <img src="/sairik-logo.jpg" alt="SairikCRM" style={{ height:'130px', width:'auto', objectFit:'contain', margin: '-45px 0' }} />
+            <img src="/sairik-logo.jpg" alt="SairikCRM" style={{ height:'90px', width:'auto', objectFit:'contain', margin: '-30px 0', flexShrink:0 }} />
             <div>
-              <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'1.5rem', fontWeight:'700', color:'#1A1A1A', margin:0 }}>
+              <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(1rem,3vw,1.5rem)', fontWeight:'700', color:'#1A1A1A', margin:0 }}>
                 {currentStore?.name ?? 'Store Analytics'}
               </h1>
               <div style={{ display:'flex', alignItems:'center', gap:'0.75rem', fontSize:'0.65rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#9ca3af', marginTop:'0.2rem' }}>
@@ -153,49 +153,52 @@ export default function AdminStoreViewPage() {
         </div>
 
         {/* Right: presets + export */}
-        <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:'1rem' }}>
-          <div style={{ display:'flex', background:'#f3f4f6', borderRadius:'999px', padding:'0.25rem', border:'1px solid #e5e7eb' }}>
-            {(['today','last7','month','year'] as const).map(p => (
-              <button
-                key={p}
-                className={`preset-btn ${activePreset === p ? 'preset-active' : 'preset-inactive'}`}
-                onClick={() => setPreset(p)}
-              >
-                {presetLabels[p]}
-              </button>
-            ))}
+        <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:'0.5rem', width:'100%' }}>
+          {/* Preset pills — scroll horizontally on tiny screens */}
+          <div style={{ overflowX:'auto', WebkitOverflowScrolling:'touch', flex:'0 0 auto' }}>
+            <div style={{ display:'flex', background:'#f3f4f6', borderRadius:'999px', padding:'0.2rem', border:'1px solid #e5e7eb', whiteSpace:'nowrap' }}>
+              {(['today','last7','month','year'] as const).map(p => (
+                <button
+                  key={p}
+                  className={`preset-btn ${activePreset === p ? 'preset-active' : 'preset-inactive'}`}
+                  onClick={() => setPreset(p)}
+                >
+                  {presetLabels[p]}
+                </button>
+              ))}
+            </div>
           </div>
           {/* Custom date pickers */}
-          <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
-            <input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ padding:'0.4rem 0.75rem', border:'1px solid rgba(212,175,55,0.3)', background:'#fff', fontSize:'0.8rem', fontFamily:'Inter,sans-serif', outline:'none', color:'#1A1A1A' }} />
+          <div style={{ display:'flex', alignItems:'center', gap:'0.35rem', flexWrap:'wrap', flex:'1 1 auto' }}>
+            <input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ padding:'0.35rem 0.5rem', border:'1px solid rgba(212,175,55,0.3)', background:'#fff', fontSize:'0.75rem', fontFamily:'Inter,sans-serif', outline:'none', color:'#1A1A1A', minWidth:0 }} />
             <span style={{ color:'#9ca3af', fontSize:'0.75rem' }}>→</span>
-            <input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ padding:'0.4rem 0.75rem', border:'1px solid rgba(212,175,55,0.3)', background:'#fff', fontSize:'0.8rem', fontFamily:'Inter,sans-serif', outline:'none', color:'#1A1A1A' }} />
-            <button onClick={() => fetchSales()} style={{ padding:'0.4rem 1rem', background:'#1A1A1A', color:'#D4AF37', border:'none', cursor:'pointer', fontSize:'0.7rem', fontWeight:'700', letterSpacing:'0.1em', textTransform:'uppercase', fontFamily:'Inter,sans-serif', transition:'all 0.2s' }}>
+            <input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ padding:'0.35rem 0.5rem', border:'1px solid rgba(212,175,55,0.3)', background:'#fff', fontSize:'0.75rem', fontFamily:'Inter,sans-serif', outline:'none', color:'#1A1A1A', minWidth:0 }} />
+            <button onClick={() => fetchSales()} style={{ padding:'0.35rem 0.75rem', background:'#1A1A1A', color:'#D4AF37', border:'none', cursor:'pointer', fontSize:'0.7rem', fontWeight:'700', letterSpacing:'0.1em', textTransform:'uppercase', fontFamily:'Inter,sans-serif', transition:'all 0.2s', flexShrink:0 }}>
               Filter
             </button>
           </div>
           <button
             onClick={downloadCSV}
-            style={{ display:'flex', alignItems:'center', gap:'0.5rem', padding:'0.6rem 1.5rem', background:'#fff', border:'1px solid #D4AF37', color:'#D4AF37', cursor:'pointer', fontWeight:'700', fontSize:'0.7rem', letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Inter,sans-serif', transition:'all 0.3s' }}
+            style={{ display:'flex', alignItems:'center', gap:'0.5rem', padding:'0.5rem 1rem', background:'#fff', border:'1px solid #D4AF37', color:'#D4AF37', cursor:'pointer', fontWeight:'700', fontSize:'0.7rem', letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Inter,sans-serif', transition:'all 0.3s', flexShrink:0 }}
           >
             ⬇ Export CSV
           </button>
         </div>
       </header>
 
-      <main style={{ maxWidth:'1440px', margin:'0 auto', padding:'3rem 2rem' }}>
+      <main style={{ maxWidth:'1440px', margin:'0 auto', padding:'1rem' }} className="md:p-8">
 
         {/* KPI CARDS */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(220px,1fr))', gap:'1.5rem', marginBottom:'3rem' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:'1rem', marginBottom:'1.5rem' }} className="md:grid-cols-4 md:gap-6 md:mb-12">
           {[
             { label: 'Revenue', value: `₹${totalRevenue.toLocaleString('en-IN')}`, color: '#D4AF37', sub: 'Selected period' },
             { label: 'Transactions', value: `${sales.length} Sales`, color: '#1A1A1A', sub: 'Selected period' },
             { label: 'Avg Sale', value: `₹${avgSale.toFixed(0)}`, color: '#1A1A1A', sub: 'Per transaction' },
             { label: 'Total Discounts', value: `-₹${totalDiscount.toLocaleString('en-IN')}`, color: '#dc2626', sub: 'Concessions granted' },
           ].map(kpi => (
-            <div key={kpi.label} className="gs" style={{ background:'#fff', padding:'1.5rem', border:'1px solid rgba(212,175,55,0.08)' }}>
+            <div key={kpi.label} className="gs" style={{ background:'#fff', padding:'1rem', border:'1px solid rgba(212,175,55,0.08)' }}>
               <p style={{ fontFamily:'Playfair Display,serif', fontSize:'1rem', fontWeight:'700', color:'#D4AF37', margin:'0 0 0.5rem' }}>{kpi.label}</p>
-              <h3 style={{ fontSize:'2rem', fontWeight:'700', color: kpi.color, lineHeight:1, margin:'0 0 0.5rem' }}>{kpi.value}</h3>
+              <h3 style={{ fontSize:'clamp(1.2rem,4vw,2rem)', fontWeight:'700', color: kpi.color, lineHeight:1, margin:'0 0 0.5rem' }}>{kpi.value}</h3>
               <p style={{ fontSize:'0.7rem', color:'#9ca3af', letterSpacing:'0.08em', textTransform:'uppercase', margin:0 }}>{kpi.sub}</p>
             </div>
           ))}
@@ -284,7 +287,7 @@ export default function AdminStoreViewPage() {
 
       </main>
 
-      <footer style={{ marginTop:'4rem', borderTop:'1px solid rgba(212,175,55,0.2)', padding:'2rem', textAlign:'center', color:'#9ca3af', fontSize:'0.65rem', letterSpacing:'0.3em', textTransform:'uppercase', background:'#fff' }}>
+      <footer style={{ marginTop:'2rem', borderTop:'1px solid rgba(212,175,55,0.2)', padding:'1rem', textAlign:'center', color:'#9ca3af', fontSize:'0.65rem', letterSpacing:'0.3em', textTransform:'uppercase', background:'#fff' }}>
         Luxury Retail Intelligence Platform — SairikCRM
       </footer>
     </div>

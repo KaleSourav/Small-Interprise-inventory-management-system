@@ -482,19 +482,20 @@ export default function NewSalePage() {
       {/* ── STICKY HEADER ── */}
       <header style={{
         background: 'linear-gradient(90deg,#1A1A1A,#D4AF37)', color: '#fff',
-        padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem',
+        padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.75rem',
+        flexWrap: 'wrap',
         boxShadow: '0 2px 8px rgba(0,0,0,0.2)', position: 'sticky', top: 0, zIndex: 50
       }}>
-        <button onClick={() => router.back()} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.4)', color: '#fff', borderRadius: '0.4rem', padding: '0.3rem 0.75rem', cursor: 'pointer', fontWeight: '600' }}>← Back</button>
-        <h1 style={{ fontSize: '1.2rem', fontWeight: '700', margin: 0 }}>New Sale</h1>
+        <button onClick={() => router.back()} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.4)', color: '#fff', borderRadius: '0.4rem', padding: '0.3rem 0.65rem', cursor: 'pointer', fontWeight: '600', flexShrink: 0 }}>← Back</button>
+        <h1 style={{ fontSize: '1.05rem', fontWeight: '700', margin: 0 }}>New Sale</h1>
         {cartItems.length > 0 && (
-          <span style={{ marginLeft: 'auto', background: '#fff', color: '#D4AF37', borderRadius: '999px', padding: '0.2rem 0.9rem', fontSize: '0.85rem', fontWeight: '700' }}>
-            🛒 {cartItems.length} line{cartItems.length !== 1 ? 's' : ''} · ₹{fmtInt(Math.round(cartTotal))}
+          <span style={{ marginLeft: 'auto', background: '#fff', color: '#D4AF37', borderRadius: '999px', padding: '0.2rem 0.75rem', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0 }}>
+            🛒 {cartItems.length} · ₹{fmtInt(Math.round(cartTotal))}
           </span>
         )}
       </header>
 
-      <main style={{ padding: '1.25rem', maxWidth: '660px', margin: '0 auto' }}>
+      <main style={{ padding: '1rem', maxWidth: '660px', margin: '0 auto' }} className="md:px-5 md:py-5">
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
           {/* ══════════════════════════════════════════════════════════════
@@ -510,7 +511,7 @@ export default function NewSalePage() {
                 <Input id="cname" placeholder="Full name" value={customerName}
                   onChange={e => setCustomerName(e.target.value)} required style={{ marginTop: '0.3rem', background: '#fff', color: '#1A1A1A', borderColor: '#E8D5A3' }} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem' }} className="sm:grid-cols-2">
                 <div>
                   <Label htmlFor="cphone" style={{ color: '#1A1A1A', fontWeight: '600' }}>Phone *</Label>
                   <Input id="cphone" type="tel" placeholder="Mobile number" value={customerPhone} required

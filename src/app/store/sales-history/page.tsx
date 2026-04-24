@@ -136,8 +136,9 @@ export default function SalesHistoryPage() {
       <header style={{
         background: '#fff',
         borderBottom: '1px solid #E8D5A3',
-        color: '#1A1A1A', padding: '1rem 1.5rem',
-        display: 'flex', alignItems: 'center', gap: '1rem',
+        color: '#1A1A1A', padding: '0.75rem 1rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        flexWrap: 'wrap',
         boxShadow: '0 2px 8px rgba(212,175,55,0.08)',
         position: 'sticky', top: 0, zIndex: 40
       }}>
@@ -146,11 +147,11 @@ export default function SalesHistoryPage() {
           color: '#D4AF37', borderRadius: '0.5rem', padding: '0.35rem 0.85rem',
           cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem'
         }}>← Back</button>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '1.15rem', fontWeight: '800', margin: 0, color: '#1A1A1A' }}>Sales History</h1>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ fontSize: '1.1rem', fontWeight: '800', margin: 0, color: '#1A1A1A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Sales History</h1>
           <div style={{ width: '32px', height: '2px', background: '#D4AF37', marginTop: '3px' }} />
         </div>
-        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '130px', width: 'auto', objectFit: 'contain', margin: '-45px 0' }} />
+        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '100px', width: 'auto', objectFit: 'contain', margin: '-35px 0', flexShrink: 0 }} />
       </header>
 
       <main style={{ padding: '1.25rem', maxWidth: '1200px', margin: '0 auto',
@@ -166,9 +167,9 @@ export default function SalesHistoryPage() {
                 { label: 'This Month',  key: 'month' as const },
               ]).map(p => (
                 <button key={p.key} onClick={() => setPreset(p.key)} style={{
-                  padding: '0.35rem 0.9rem', borderRadius: '999px',
+                  padding: '0.35rem 0.75rem', borderRadius: '999px',
                   border: '1px solid #E8D5A3', background: '#fff',
-                  color: '#6B6B6B', fontWeight: '600', fontSize: '0.85rem',
+                  color: '#6B6B6B', fontWeight: '600', fontSize: '0.8rem',
                   cursor: 'pointer', transition: 'all 0.15s'
                 }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FDFBF3'; (e.currentTarget as HTMLButtonElement).style.borderColor = '#D4AF37'; (e.currentTarget as HTMLButtonElement).style.color = '#D4AF37'; }}
@@ -176,26 +177,27 @@ export default function SalesHistoryPage() {
                 >{p.label}</button>
               ))}
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <label style={{ fontSize: '0.85rem', color: '#374151', fontWeight: '500' }}>From:</label>
-                <Input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ width: '160px' }} />
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flex: '1 1 130px' }}>
+                <label style={{ fontSize: '0.82rem', color: '#374151', fontWeight: '500', whiteSpace: 'nowrap' }}>From:</label>
+                <Input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ flex: 1, minWidth: '120px' }} />
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <label style={{ fontSize: '0.85rem', color: '#374151', fontWeight: '500' }}>To:</label>
-                <Input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ width: '160px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flex: '1 1 130px' }}>
+                <label style={{ fontSize: '0.82rem', color: '#374151', fontWeight: '500', whiteSpace: 'nowrap' }}>To:</label>
+                <Input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ flex: 1, minWidth: '120px' }} />
               </div>
               <Button onClick={() => fetchSales()} style={{
                 background: '#D4AF37', color: '#fff',
                 border: 'none', borderRadius: '10px',
-                padding: '0.45rem 1.25rem', fontWeight: '700', cursor: 'pointer'
+                padding: '0.45rem 1.1rem', fontWeight: '700', cursor: 'pointer',
+                flexShrink: 0
               }}>Search</Button>
             </div>
           </CardContent>
         </Card>
 
         {/* ── SUMMARY CARDS ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: '0.75rem' }} className="sm:grid-cols-3 sm:gap-4">
           <Card style={{ background: '#fff', borderRadius: '12px', border: '1px solid #E8D5A3', boxShadow: '0 4px 12px rgba(212,175,55,0.08)' }}>
             <CardHeader style={{ paddingBottom: '0.25rem' }}>
               <CardTitle style={{ fontSize: '0.8rem', color: '#6b7280', fontWeight: '500' }}>Transactions</CardTitle>
@@ -241,7 +243,7 @@ export default function SalesHistoryPage() {
               <p style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>No records found for this period</p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem', minWidth: '700px' }}>
                   <thead>
                     <tr style={{ background: '#FDFBF3', borderBottom: '2px solid #fde68a' }}>
                     {['Date', 'Customer', 'Phone', 'Product', 'Size', 'Qty', 'Category', 'MRP', 'Discount', 'Final Price', 'Invoice'].map(h => (

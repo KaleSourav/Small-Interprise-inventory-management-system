@@ -320,9 +320,10 @@ export default function StoreProductsPage() {
 
       {/* ── HEADER ── */}
       <header style={{
-        background: '#fff', padding: '1rem 1.5rem',
+        background: '#fff', padding: '0.75rem 1rem',
         borderBottom: '1px solid #E8D5A3',
-        display: 'flex', alignItems: 'center', gap: '1rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        flexWrap: 'wrap',
         boxShadow: '0 2px 8px rgba(212,175,55,0.08)',
         position: 'sticky', top: 0, zIndex: 40
       }}>
@@ -331,20 +332,20 @@ export default function StoreProductsPage() {
           style={{
             background: '#FDFBF3', border: '1px solid #E8D5A3',
             color: '#D4AF37', borderRadius: '8px', padding: '0.35rem 0.85rem',
-            cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem'
+            cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem', flexShrink: 0
           }}
         >
           ← Back
         </button>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, color: '#1A1A1A', lineHeight: 1.2 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ fontSize: '1.1rem', fontWeight: '800', margin: 0, color: '#1A1A1A', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             Products Catalog
           </h1>
-          <p style={{ margin: 0, fontSize: '0.72rem', color: '#9CA3AF', letterSpacing: '0.05em' }}>
+          <p style={{ margin: 0, fontSize: '0.7rem', color: '#9CA3AF', letterSpacing: '0.05em' }}>
             All available products · {user?.store_name || 'Store'}
           </p>
         </div>
-        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '130px', width: 'auto', objectFit: 'contain', margin: '-45px 0' }} />
+        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '100px', width: 'auto', objectFit: 'contain', margin: '-35px 0', flexShrink: 0 }} />
       </header>
 
       {/* ── BREADCRUMB ── */}
@@ -370,7 +371,7 @@ export default function StoreProductsPage() {
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem 1.25rem' }}>
 
         {/* ── STATS CARDS ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.25rem' }} className="grid-cols-3 sm:gap-4">
           <div style={{ background: '#fff', border: '1px solid #f3f4f6', borderRadius: '12px', padding: '1.1rem 1.25rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <p style={{ margin: '0 0 0.25rem', fontSize: '0.7rem', fontWeight: '600', color: '#9ca3af', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               Total Products
@@ -398,7 +399,7 @@ export default function StoreProductsPage() {
         </div>
 
         {/* ── FILTER ROW ── */}
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
           {/* Search */}
           <input
             type="text"
@@ -456,7 +457,7 @@ export default function StoreProductsPage() {
             )}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
             {filteredProducts.map((product: any) => {
               const oos = isOOS(product.id);
               const pending = isPending(product.id);

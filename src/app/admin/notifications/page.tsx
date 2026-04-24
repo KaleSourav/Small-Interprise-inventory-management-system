@@ -166,9 +166,10 @@ export default function AdminNotificationsPage() {
     <div style={{ minHeight: '100vh', background: '#F9F7F2', fontFamily: 'Inter, sans-serif' }}>
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <header style={{
-        background: '#fff', padding: '1rem 1.75rem',
+        background: '#fff', padding: '0.75rem 1rem',
         borderBottom: '1px solid #E8D5A3',
-        display: 'flex', alignItems: 'center', gap: '1rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        flexWrap: 'wrap',
         boxShadow: '0 2px 8px rgba(212,175,55,0.08)',
         position: 'sticky', top: 0, zIndex: 40
       }}>
@@ -177,27 +178,27 @@ export default function AdminNotificationsPage() {
           style={{
             background: '#FDFBF3', border: '1px solid #E8D5A3',
             color: '#D4AF37', borderRadius: '8px', padding: '0.35rem 0.85rem',
-            cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem'
+            cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem', flexShrink: 0
           }}
         >← Back</button>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <h1 style={{ fontSize: '1.15rem', fontWeight: '800', margin: 0, color: '#1A1A1A' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 0 }}>
+          <h1 style={{ fontSize: '1.1rem', fontWeight: '800', margin: 0, color: '#1A1A1A', whiteSpace: 'nowrap' }}>
             🔔 Notifications &amp; Disputes
           </h1>
           {(disputes.length > 0 || stockRequests.length > 0) && (
             <span style={{
               background: '#dc2626', color: '#fff',
-              borderRadius: '999px', padding: '0.15rem 0.65rem',
-              fontSize: '0.75rem', fontWeight: '800'
+              borderRadius: '999px', padding: '0.15rem 0.55rem',
+              fontSize: '0.72rem', fontWeight: '800', flexShrink: 0
             }}>
               {disputes.length + stockRequests.length} pending
             </span>
           )}
         </div>
-        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '130px', width: 'auto', objectFit: 'contain', margin: '-45px 0' }} />
+        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '100px', width: 'auto', objectFit: 'contain', margin: '-35px 0', flexShrink: 0 }} />
       </header>
 
-      <main style={{ padding: '1.5rem', maxWidth: '820px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <main style={{ padding: '1rem', maxWidth: '820px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }} className="md:px-6 md:py-5">
 
         {/* ── TABS ───────────────────────────────────────────────────────── */}
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>

@@ -120,8 +120,9 @@ export default function ManageStoresPage() {
       <header style={{
         background: '#fff',
         borderBottom: '1px solid #E8D5A3',
-        padding: '1rem 1.75rem',
-        display: 'flex', alignItems: 'center', gap: '1rem',
+        padding: '0.75rem 1rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        flexWrap: 'wrap',
         boxShadow: '0 2px 8px rgba(212,175,55,0.08)',
         position: 'sticky', top: 0, zIndex: 40
       }}>
@@ -130,20 +131,20 @@ export default function ManageStoresPage() {
           style={{
             background: '#FDFBF3', border: '1px solid #E8D5A3',
             color: '#D4AF37', borderRadius: '8px', padding: '0.35rem 0.85rem',
-            cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem'
+            cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem', flexShrink: 0
           }}
         >
           ← Back
         </button>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '1.15rem', fontWeight: '800', margin: 0, color: '#1A1A1A' }}>Manage Stores</h1>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ fontSize: '1.1rem', fontWeight: '800', margin: 0, color: '#1A1A1A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Manage Stores</h1>
           <div style={{ width: '32px', height: '2px', background: '#D4AF37', marginTop: '3px' }} />
         </div>
-        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '130px', width: 'auto', objectFit: 'contain', margin: '-45px 0' }} />
+        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '100px', width: 'auto', objectFit: 'contain', margin: '-35px 0', flexShrink: 0 }} />
       </header>
 
-      <main style={{ padding: '1.5rem', maxWidth: '900px', margin: '0 auto',
-        display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <main style={{ padding: '1rem', maxWidth: '900px', margin: '0 auto',
+        display: 'flex', flexDirection: 'column', gap: '1.25rem' }} className="md:px-6 md:py-5">
 
         {/* ── Success message ──────────────────────────────────────────── */}
         {successMsg && (
@@ -188,11 +189,10 @@ export default function ManageStoresPage() {
                 Add New Store
               </h3>
 
-              {/* 2-column grid */}
+              {/* 1-column on mobile, 2-column on sm+ */}
               <div style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr',
-                gap: '0.85rem', marginBottom: '1rem'
-              }}>
+                display: 'grid', gap: '0.85rem', marginBottom: '1rem'
+              }} className="grid-cols-1 sm:grid-cols-2">
                 <div>
                   <label style={{ fontSize: '0.82rem', fontWeight: '600', color: '#374151', display: 'block', marginBottom: '0.3rem' }}>
                     Store Name *
@@ -287,7 +287,7 @@ export default function ManageStoresPage() {
                 flexWrap: 'wrap'
               }}>
                 {/* Left — store info */}
-                <div style={{ flex: 1, minWidth: '180px' }}>
+                <div style={{ flex: 1, minWidth: '120px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
                     <span style={{ fontWeight: '700', fontSize: '1rem', color: '#111827' }}>
                       {store.name}

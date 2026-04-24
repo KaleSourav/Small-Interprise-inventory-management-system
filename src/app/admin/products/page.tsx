@@ -395,19 +395,19 @@ export default function ProductCatalogPage() {
 
       {/* ── HEADER ──────────────────────────────────────────────────────── */}
       <header style={{
-        background: '#fff', padding: '1rem 1.75rem',
+        background: '#fff', padding: '0.75rem 1rem',
         borderBottom: '1px solid #E8D5A3',
-        display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
+        display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
         boxShadow: '0 2px 8px rgba(212,175,55,0.08)',
         position: 'sticky', top: 0, zIndex: 40
       }}>
         <button onClick={() => router.back()} style={{
           background: '#FDFBF3', border: '1px solid #E8D5A3',
           color: '#D4AF37', borderRadius: '8px', padding: '0.35rem 0.85rem',
-          cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem'
+          cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem', flexShrink: 0
         }}>← Back</button>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, color: '#1A1A1A' }}>Product Catalog</h1>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ fontSize: '1.1rem', fontWeight: '800', margin: 0, color: '#1A1A1A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Product Catalog</h1>
           <div style={{ width: '32px', height: '2px', background: '#D4AF37', marginTop: '3px' }} />
         </div>
         {/* Disputes badge */}
@@ -415,20 +415,20 @@ export default function ProductCatalogPage() {
           <button
             onClick={() => router.push('/admin/notifications')}
             style={{
-              marginLeft: 'auto', background: '#dc2626', color: '#fff',
-              border: 'none', borderRadius: '8px', padding: '0.35rem 0.9rem',
-              fontWeight: '700', fontSize: '0.8rem', cursor: 'pointer',
+              background: '#dc2626', color: '#fff',
+              border: 'none', borderRadius: '8px', padding: '0.35rem 0.75rem',
+              fontWeight: '700', fontSize: '0.75rem', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              boxShadow: '0 2px 8px rgba(220,38,38,0.2)', whiteSpace: 'nowrap'
+              boxShadow: '0 2px 8px rgba(220,38,38,0.2)', whiteSpace: 'nowrap', flexShrink: 0
             }}
           >
-            ⚠️ {disputeCount} store{disputeCount !== 1 ? 's' : ''} claiming they have stock — Review
+            ⚠️ {disputeCount} Review
           </button>
         )}
-        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '130px', width: 'auto', objectFit: 'contain', margin: '-45px 0' }} />
+        <img src="/sairik-logo.jpg" alt="SAIRIK" style={{ height: '100px', width: 'auto', objectFit: 'contain', margin: '-35px 0', flexShrink: 0 }} />
       </header>
 
-      <main style={{ padding: '1.5rem', maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <main style={{ padding: '1rem', maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }} className="md:px-6 md:py-5">
 
         {/* ── Toasts ────────────────────────────────────────────────────── */}
         {successMsg && (
@@ -458,7 +458,7 @@ export default function ProductCatalogPage() {
 
               <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                 {/* Left */}
-                <div style={{ flex: '0 0 280px' }}>
+                <div style={{ flex: '1 1 260px', minWidth: 0 }}>
                   <p style={{ margin: '0 0 0.75rem 0', fontWeight: '800', fontSize: '0.88rem', color: '#1A1A1A' }}>Add New Category</p>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <Input placeholder="e.g. Body Mist" value={newCatName}

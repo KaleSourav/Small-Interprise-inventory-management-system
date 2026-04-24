@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { Bell } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -15,6 +16,7 @@ interface Store {
 
 export default function AdminDashboardPage() {
   const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [stores,    setStores]    = useState<Store[]>([]);
   const [loading,   setLoading]   = useState(true);
   const [bellCount, setBellCount] = useState(0);
@@ -240,123 +242,98 @@ export default function AdminDashboardPage() {
       `}</style>
 
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
-      <header style={{
-        background: '#fff',
-        borderBottom: '1px solid #D4AF37',
-        padding: '1rem 3rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        boxShadow: '0 2px 20px rgba(212,175,55,0.08)'
-      }}>
-        {/* Logo + Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <img src="/sairik-logo.jpg" alt="SairikCRM" style={{ height: '140px', width: 'auto', objectFit: 'contain', margin: '-50px 0' }} />
-          <div style={{ borderLeft: '1px solid rgba(212,175,55,0.3)', paddingLeft: '1rem' }}>
-            <div style={{ fontSize: '0.6rem', fontWeight: '700', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D4AF37', marginBottom: '0.2rem' }}>
-              Super Admin
+      <header className="bg-white border-b border-[#E8D5A3] sticky top-0 z-50" style={{ boxShadow: '0 2px 20px rgba(212,175,55,0.08)' }}>
+        {/* TOP ROW — Logo + hamburger + bell + logout */}
+        <div className="flex items-center justify-between px-4 py-3 md:px-8">
+          {/* Left — Logo + Title */}
+          <div className="flex items-center gap-3 min-w-0">
+            <img src="/sairik-logo.jpg" alt="SairikCRM" className="h-10 w-auto object-contain flex-shrink-0" />
+            <div className="border-l border-[rgba(212,175,55,0.3)] pl-3 min-w-0">
+              <p className="text-[0.55rem] font-bold tracking-[0.15em] uppercase text-[#D4AF37] mb-0">Super Admin</p>
+              <p className="hidden sm:block font-bold text-[#1A1A1A] text-sm whitespace-nowrap" style={{ fontFamily: 'Playfair Display, serif' }}>Brand Management Portal</p>
             </div>
-            <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.2rem', fontWeight: '700', color: '#1A1A1A' }}>
-              Brand Management Portal
+          </div>
+
+          {/* Right — desktop nav + mobile controls */}
+          <div className="flex items-center gap-2">
+            {/* Desktop nav buttons */}
+            <div className="hidden md:flex items-center gap-2">
+              <button className="nav-btn" onClick={() => router.push('/admin/stores')}>Manage Stores</button>
+              <button className="nav-btn" onClick={() => router.push('/admin/products')}>Product Catalog</button>
+              {/* Desktop Bell */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => router.push('/admin/notifications')}
+                  title={bellCount > 0 ? `${bellCount} pending` : 'Notifications'}
+                  style={{ background: bellCount > 0 ? 'rgba(212,175,55,0.1)' : 'transparent', border: `1px solid ${bellCount > 0 ? '#D4AF37' : 'rgba(212,175,55,0.4)'}`, borderRadius: '0', padding: '0.45rem 0.6rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: bellCount > 0 ? '#D4AF37' : '#9ca3af', transition: 'all 0.2s' }}
+                ><Bell size={17} /></button>
+                {bellCount > 0 && (
+                  <span style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#dc2626', color: '#fff', borderRadius: '999px', minWidth: '1.1rem', height: '1.1rem', fontSize: '0.6rem', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.2rem', lineHeight: 1, border: '2px solid #fff' }}>{bellCount > 99 ? '99+' : bellCount}</span>
+                )}
+              </div>
+              <button onClick={handleLogout} style={{ background: '#1A1A1A', color: '#D4AF37', border: '1px solid #1A1A1A', padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '700', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif', transition: 'all 0.3s' }}>Logout</button>
             </div>
+
+            {/* Mobile Bell */}
+            <div className="md:hidden" style={{ position: 'relative' }}>
+              <button onClick={() => router.push('/admin/notifications')} style={{ background: 'transparent', border: `1px solid ${bellCount > 0 ? '#D4AF37' : 'rgba(212,175,55,0.4)'}`, borderRadius: '0.4rem', padding: '0.4rem 0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', color: bellCount > 0 ? '#D4AF37' : '#9ca3af' }}><Bell size={16} /></button>
+              {bellCount > 0 && (
+                <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#dc2626', color: '#fff', borderRadius: '999px', minWidth: '1rem', height: '1rem', fontSize: '0.55rem', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>{bellCount > 99 ? '99+' : bellCount}</span>
+              )}
+            </div>
+
+            {/* Mobile hamburger */}
+            <button className="md:hidden" style={{ background: 'transparent', border: '1px solid rgba(212,175,55,0.4)', borderRadius: '0.4rem', padding: '0.4rem 0.6rem', cursor: 'pointer', fontSize: '1rem', color: '#D4AF37' }} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>☰</button>
           </div>
         </div>
 
-        {/* Nav Actions */}
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button className="nav-btn" onClick={() => router.push('/admin/stores')}>
-            Manage Stores
-          </button>
-          <button className="nav-btn" onClick={() => router.push('/admin/products')}>
-            Product Catalog
-          </button>
-
-          {/* Bell */}
-          <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => router.push('/admin/notifications')}
-              title={bellCount > 0 ? `${bellCount} pending` : 'Notifications'}
-              style={{
-                background: bellCount > 0 ? 'rgba(212,175,55,0.1)' : 'transparent',
-                border: `1px solid ${bellCount > 0 ? '#D4AF37' : 'rgba(212,175,55,0.4)'}`,
-                borderRadius: '0',
-                padding: '0.45rem 0.6rem',
-                cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: bellCount > 0 ? '#D4AF37' : '#9ca3af',
-                transition: 'all 0.2s'
-              }}
-            >
-              <Bell size={17} />
-            </button>
-            {bellCount > 0 && (
-              <span style={{
-                position: 'absolute', top: '-6px', right: '-6px',
-                background: '#dc2626', color: '#fff',
-                borderRadius: '999px', minWidth: '1.1rem', height: '1.1rem',
-                fontSize: '0.6rem', fontWeight: '800',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: '0 0.2rem', lineHeight: 1, border: '2px solid #fff'
-              }}>{bellCount > 99 ? '99+' : bellCount}</span>
-            )}
+        {/* Mobile dropdown menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-[#E8D5A3] bg-white px-4 py-3 flex flex-col gap-1">
+            <button onClick={() => { router.push('/admin/stores'); setMobileMenuOpen(false); }} className="text-left px-4 py-3 text-sm font-semibold text-[#1A1A1A] hover:bg-[#FDFBF3] rounded-xl border border-[#E8D5A3] transition-colors">🏪 Manage Stores</button>
+            <button onClick={() => { router.push('/admin/products'); setMobileMenuOpen(false); }} className="text-left px-4 py-3 text-sm font-semibold text-[#1A1A1A] hover:bg-[#FDFBF3] rounded-xl border border-[#E8D5A3] transition-colors">📦 Product Catalog</button>
+            <button onClick={handleLogout} className="text-left px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl border border-red-200 transition-colors">🚪 Logout</button>
           </div>
-
-          <button
-            onClick={handleLogout}
-            style={{
-              background: '#1A1A1A', color: '#D4AF37',
-              border: '1px solid #1A1A1A',
-              padding: '0.45rem 1rem', cursor: 'pointer',
-              fontWeight: '700', fontSize: '0.75rem',
-              letterSpacing: '0.1em', textTransform: 'uppercase',
-              fontFamily: 'Inter, sans-serif', transition: 'all 0.3s'
-            }}
-          >
-            Logout
-          </button>
-        </div>
+        )}
       </header>
 
       {/* ── MAIN ──────────────────────────────────────────────────────── */}
-      <main style={{ padding: '3rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <main style={{ padding: '1rem', maxWidth: '1400px', margin: '0 auto' }} className="md:px-8 md:py-6">
 
         {/* ── DATE FILTER ── */}
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex flex-wrap items-center gap-2 mb-6">
           {['Daily','Weekly','Monthly','Yearly'].map(f => (
             <button key={f}
               onClick={() => setActiveFilter(f)}
-              className={`px-5 py-1.5 rounded-full text-sm font-medium
-                transition-colors ${activeFilter === f
-                  ? 'bg-yellow-500 text-white'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:border-yellow-400'}`}>
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+                ${activeFilter === f
+                  ? 'bg-[#D4AF37] text-white'
+                  : 'bg-white border border-[#E8D5A3] text-[#6B6B6B] hover:border-[#D4AF37]'}`}>
               {f}
             </button>
           ))}
         </div>
 
         {/* ── KPI CARDS ── */}
-        <div className="grid grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
           {[
             {label:'TOTAL REVENUE', 
              value: formatINR(totalRevenue), 
-             valueClass:'text-2xl font-bold text-gray-900'},
+             valueClass:'text-lg md:text-2xl font-bold text-gray-900'},
             {label:'TRANSACTIONS', 
              value: allSales.length.toLocaleString(), 
-             valueClass:'text-2xl font-bold text-gray-900'},
+             valueClass:'text-lg md:text-2xl font-bold text-gray-900'},
             {label:'ACTIVE STORES', 
              value: stores.filter(s=>s.is_active).length + ' / ' + stores.length, 
-             valueClass:'text-2xl font-bold text-gray-900'},
+             valueClass:'text-lg md:text-2xl font-bold text-gray-900'},
             {label:'BEST SELLER', 
              value: bestSeller || '—', 
-             valueClass:'text-lg font-bold text-yellow-600 uppercase'},
+             valueClass:'text-sm font-bold text-yellow-600 uppercase leading-tight'},
             {label:'TOTAL DISCOUNTS', 
              value: formatINR(totalDiscount), 
-             valueClass:'text-2xl font-bold text-gray-900'},
+             valueClass:'text-lg md:text-2xl font-bold text-gray-900'},
           ].map((card, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 border-l-4 border-l-yellow-500">
+            <div key={i} className="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100 border-l-4 border-l-yellow-500 min-h-[100px]">
               <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">{card.label}</p>
               <p className={card.valueClass}>{card.value}</p>
             </div>
@@ -364,9 +341,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* ── REVENUE TREND + CATEGORY DONUT ── */}
-        <div className="grid grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
           {/* Revenue Trend */}
-          <div className="col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="col-span-1 lg:col-span-3 bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-1">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Revenue Trend</h3>
@@ -374,7 +351,7 @@ export default function AdminDashboardPage() {
               </div>
               <span className="text-gray-300 text-xl">···</span>
             </div>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={weeklyData}>
                 <defs>
                   <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
@@ -391,10 +368,10 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Sales by Category */}
-          <div className="col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="col-span-1 lg:col-span-2 bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-1">Sales by Category</h3>
             <div className="w-8 h-0.5 bg-yellow-500 mb-4"/>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie data={categoryData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} dataKey="value" paddingAngle={2}>
                   {categoryData.map((_:any, i:number) => (
@@ -421,9 +398,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* ── STORE PERFORMANCE + TOP PRODUCTS ── */}
-        <div className="grid grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
           {/* Store Performance */}
-          <div className="col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="col-span-1 lg:col-span-3 bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-1">Store Performance Ranking</h3>
             <div className="w-8 h-0.5 bg-yellow-500 mb-5"/>
             {(() => {
@@ -462,10 +439,11 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Top 10 Products */}
-          <div className="col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="col-span-1 lg:col-span-2 bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-1">Top 10 Products</h3>
             <div className="w-8 h-0.5 bg-yellow-500 mb-4"/>
-            <table className="w-full text-sm">
+            <div className="w-full overflow-x-auto">
+            <table className="min-w-[340px] w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-50">
                   <th className="text-left text-xs text-gray-400 uppercase tracking-wide pb-2">Product</th>
@@ -485,11 +463,12 @@ export default function AdminDashboardPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 
         {/* ── SELLING SIZES + ELITE CUSTOMERS + LIVE ACTIVITY ── */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Selling Sizes */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-1">Selling Sizes</h3>
@@ -547,16 +526,16 @@ export default function AdminDashboardPage() {
 
         {/* ── OOS ALERT BAR ── */}
         {oosCount > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-amber-50 border-t border-amber-200 py-3 px-8 flex items-center justify-between z-50">
+          <div className="fixed bottom-0 left-0 right-0 bg-amber-50 border-t border-amber-200 py-2 md:py-3 px-4 md:px-8 flex items-center justify-between z-50">
             <div className="flex items-center gap-2">
               <span className="text-amber-500">⚠️</span>
-              <span className="text-sm font-bold tracking-wide text-amber-800 uppercase">
+              <span className="text-xs md:text-sm font-bold tracking-wide text-amber-800 uppercase">
                 {oosCount} STORES HAVE PENDING OOS REQUESTS
               </span>
             </div>
             <button
               onClick={() => router.push('/admin/notifications')}
-              className="bg-yellow-500 text-white rounded-full px-5 py-1.5 text-sm font-medium hover:bg-yellow-600 transition-colors">
+              className="bg-yellow-500 text-white rounded-full px-3 py-1 text-xs font-medium hover:bg-yellow-600 transition-colors">
               REVIEW NOW
             </button>
           </div>
@@ -581,11 +560,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Stores Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '1.5rem',
-        }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {stores.length === 0 ? (
             <p style={{ color: '#9ca3af', gridColumn: '1/-1', textAlign: 'center', padding: '4rem', fontSize: '0.9rem', letterSpacing: '0.1em' }}>
               NO STORES FOUND

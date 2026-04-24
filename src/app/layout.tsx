@@ -21,7 +21,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: META_THEME_COLORS.light
+  themeColor: META_THEME_COLORS.light,
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1
 };
 
 export default async function RootLayout({
@@ -51,7 +54,7 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          'bg-background overflow-x-hidden overscroll-none font-sans antialiased',
+          'bg-background overflow-x-hidden overscroll-none font-sans antialiased min-w-0',
           fontVariables
         )}
       >

@@ -357,52 +357,52 @@ export default function StoreDashboardPage() {
       )}
 
       {/* HEADER */}
-      <header style={{ background:'rgba(255,255,255,0.9)', backdropFilter:'blur(12px)', borderBottom:'1px solid rgba(212,175,55,0.2)', padding:'1.25rem 2rem', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:50 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
-          <img src="/sairik-logo.jpg" alt="SairikCRM" style={{ height:'140px', width:'auto', objectFit:'contain', margin: '-50px 0' }} />
-          <div style={{ borderLeft:'1px solid rgba(212,175,55,0.25)', paddingLeft:'1rem' }}>
-            <p style={{ fontSize:'0.6rem', fontWeight:'700', letterSpacing:'0.2em', textTransform:'uppercase', color:'#D4AF37', margin:0 }}>Staff Access</p>
-            <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'1.2rem', fontWeight:'700', color:'#1A1A1A', margin:0 }}>{user?.store_name ?? 'Store'}</h1>
+      <header className="bg-white border-b border-[#E8D5A3] sticky top-0 z-40 px-4 py-3 md:px-8" style={{ backdropFilter: 'blur(12px)', background: 'rgba(255,255,255,0.95)' }}>
+        <div className="flex items-center justify-between gap-2">
+          {/* Left — Logo + Store name */}
+          <div className="flex items-center gap-2 min-w-0">
+            <img src="/sairik-logo.jpg" alt="SairikCRM" className="h-9 w-auto object-contain flex-shrink-0" />
+            <div className="border-l border-[rgba(212,175,55,0.25)] pl-2 min-w-0">
+              <p style={{ fontSize: '0.55rem', fontWeight: '700', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#D4AF37', margin: 0 }}>Staff Access</p>
+              <h1 className="text-sm font-bold text-[#1A1A1A] truncate max-w-[140px] sm:max-w-[220px]" style={{ margin: 0 }}>{user?.store_name ?? 'Store'}</h1>
+            </div>
           </div>
-        </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
-          <span style={{ fontSize:'0.85rem', color:'#9ca3af', fontWeight:'500' }}>Good Morning! 🌸</span>
-          <button
-            onClick={() => {
-              router.push('/store/notifications')
-              setHasNewNotification(false)
-            }}
-            className="relative p-2">
-            <Bell className="w-5 h-5 text-gray-600" />
-            {(notifications.filter((n:any) => 
-              !n.is_read_by_store).length > 0 || 
-              hasNewNotification) && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold animate-pulse">
-                {notifications.filter((n:any) => 
-                  !n.is_read_by_store).length || '!'}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={handleLogout}
-            style={{ display:'flex', alignItems:'center', gap:'0.5rem', padding:'0.6rem 1.25rem', border:'1px solid #D4AF37', color:'#D4AF37', background:'transparent', cursor:'pointer', fontSize:'0.7rem', fontWeight:'700', letterSpacing:'0.15em', textTransform:'uppercase', fontFamily:'Inter,sans-serif', transition:'all 0.3s' }}
-          >
-            Logout
-          </button>
+          {/* Right — Greeting + Bell + Logout */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="hidden sm:inline" style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: '500' }}>Good Morning! 🌸</span>
+            <button
+              onClick={() => {
+                router.push('/store/notifications')
+                setHasNewNotification(false)
+              }}
+              className="relative p-2 rounded-xl hover:bg-[#FDFBF3] transition-colors">
+              <Bell className="w-5 h-5 text-[#D4AF37]" />
+              {(notifications.filter((n:any) => !n.is_read_by_store).length > 0 || hasNewNotification) && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold animate-pulse">
+                  {notifications.filter((n:any) => !n.is_read_by_store).length || '!'}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-3 py-1.5 text-xs sm:text-sm font-semibold border-2 border-[#D4AF37] text-[#D4AF37] rounded-xl hover:bg-[#FDFBF3] transition-colors">
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
-      <main style={{ maxWidth:'1400px', margin:'0 auto', padding:'2.5rem 2rem' }}>
+      <main style={{ maxWidth:'1400px', margin:'0 auto', padding:'1rem' }} className="md:px-8 md:py-6">
 
         {/* STAT CARDS */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 mb-6">
           {/* Card 1: Today's Revenue */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">TODAY'S REVENUE</p>
-            <p className="text-3xl font-bold text-yellow-600">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2 leading-tight">TODAY'S REVENUE</p>
+            <p className="text-xl sm:text-3xl font-bold text-yellow-600">
               ₹{todayRevenue.toLocaleString('en-IN')}
             </p>
-            <p className="text-xs text-gray-400 mt-2 uppercase tracking-wide">7-DAY PERFORMANCE</p>
+            <p className="text-xs text-gray-400 mt-1 uppercase tracking-wide">7-DAY PERFORMANCE</p>
             <div className="flex items-end gap-1 mt-2 h-6">
               {[30,45,35,60,50,75,100].map((h, i) => (
                 <div key={i} 
@@ -416,114 +416,106 @@ export default function StoreDashboardPage() {
           </div>
 
           {/* Card 2: Transactions */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
             <div className="flex justify-between items-start">
-              <p className="text-xs text-gray-400 uppercase tracking-widest">TRANSACTIONS</p>
+              <p className="text-xs text-gray-400 uppercase tracking-widest leading-tight">TRANSACTIONS</p>
               <span className="text-yellow-500 text-lg">🧾</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900 mt-3">
+            <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-2">
               {todaySales.length} 
-              <span className="text-xl font-normal text-gray-500 ml-1">Sales</span>
+              <span className="text-base font-normal text-gray-500 ml-1">Sales</span>
             </p>
-            <p className="text-xs text-green-500 mt-2 font-medium">↗ More than yesterday</p>
+            <p className="text-xs text-green-500 mt-1 font-medium">↗ More than yesterday</p>
           </div>
 
           {/* Card 3: Biggest Sale */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
             <div className="flex justify-between items-start">
-              <p className="text-xs text-gray-400 uppercase tracking-widest">BIGGEST SALE TODAY</p>
+              <p className="text-xs text-gray-400 uppercase tracking-widest leading-tight">BIGGEST SALE</p>
               <span className="text-yellow-500 text-lg">⭐</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900 mt-3">
+            <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-2">
               {biggestSale 
                 ? '₹' + biggestSale.final_price.toLocaleString('en-IN') 
                 : '₹0'}
             </p>
             {biggestSale && (
-              <p className="text-xs text-gray-400 mt-2 italic">
-                {biggestSale.customer_name} — {biggestSale.product_name}
+              <p className="text-xs text-gray-400 mt-1 italic truncate">
+                {biggestSale.customer_name}
               </p>
             )}
           </div>
 
           {/* Card 4: Most Sold */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
             <div className="flex justify-between items-start">
-              <p className="text-xs text-gray-400 uppercase tracking-widest">MOST SOLD TODAY</p>
+              <p className="text-xs text-gray-400 uppercase tracking-widest leading-tight">MOST SOLD</p>
               <span className="text-lg">🔥</span>
             </div>
-            <p className="text-xl font-bold text-gray-900 mt-3 leading-tight">
+            <p className="text-base sm:text-xl font-bold text-gray-900 mt-2 leading-tight">
               {mostSold || '—'}
             </p>
-            <p className="text-xs text-gray-400 mt-2 uppercase tracking-wide">
+            <p className="text-xs text-gray-400 mt-1 uppercase tracking-wide">
               {mostSold 
-                ? todaySales.filter((s:any) => s.product_name === mostSold).length + ' UNITS SOLD TODAY'
+                ? todaySales.filter((s:any) => s.product_name === mostSold).length + ' UNITS'
                 : 'NO SALES YET'}
             </p>
           </div>
         </div>
 
         {/* ACTION CARDS */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style={{ marginBottom:'3rem' }}>
+        <section className="grid grid-cols-2 gap-3 md:gap-4" style={{ marginBottom:'2rem' }}>
           {/* New Sale */}
-          <div className="ac" onClick={() => router.push('/store/new-sale')} style={{ padding:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#D4AF37 0%,#B6932F 100%)', border:'none' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:'1.5rem' }}>
-              <div style={{ background:'rgba(255,255,255,0.15)', padding:'1.1rem', border:'1px solid rgba(255,255,255,0.25)', fontSize:'1.75rem' }}>💰</div>
-              <div>
-                <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'1.5rem', fontWeight:'700', color:'#fff', margin:'0 0 0.25rem' }}>New Sale</h2>
-                <p style={{ fontSize:'0.65rem', color:'rgba(255,255,255,0.7)', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>Record a Transaction</p>
-              </div>
+          <div className="ac" onClick={() => router.push('/store/new-sale')} style={{ padding:'1rem', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#D4AF37 0%,#B6932F 100%)', border:'none' }}>
+            <div style={{ minWidth: 0 }}>
+              <div className="hidden sm:block" style={{ background:'rgba(255,255,255,0.15)', padding:'0.6rem', border:'1px solid rgba(255,255,255,0.25)', fontSize:'1.2rem', display:'inline-block', marginBottom:'0.5rem' }}>💰</div>
+              <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(0.9rem,3vw,1.3rem)', fontWeight:'700', color:'#fff', margin:'0 0 0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>New Sale</h2>
+              <p className="hidden sm:block" style={{ fontSize:'0.6rem', color:'rgba(255,255,255,0.7)', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>Record a Transaction</p>
             </div>
-            <div style={{ background:'#fff', borderRadius:'999px', width:'3rem', height:'3rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#D4AF37', fontWeight:'700', fontSize:'1.1rem', flexShrink:0 }}>→</div>
+            <div style={{ background:'#fff', borderRadius:'999px', width:'2rem', height:'2rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#D4AF37', fontWeight:'700', fontSize:'0.9rem', flexShrink:0 }}>→</div>
           </div>
 
           {/* Sales History */}
-          <div className="ac" onClick={() => router.push('/store/sales-history')} style={{ padding:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:'1.5rem' }}>
-              <div style={{ background:'rgba(212,175,55,0.06)', padding:'1.1rem', border:'1px solid rgba(212,175,55,0.12)', fontSize:'1.75rem' }}>📊</div>
-              <div>
-                <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'1.5rem', fontWeight:'700', color:'#1A1A1A', margin:'0 0 0.25rem' }}>Sales History</h2>
-                <p style={{ fontSize:'0.65rem', color:'#9ca3af', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>View Past Performance</p>
-              </div>
+          <div className="ac" onClick={() => router.push('/store/sales-history')} style={{ padding:'1rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ minWidth: 0 }}>
+              <div className="hidden sm:block" style={{ background:'rgba(212,175,55,0.06)', padding:'0.6rem', border:'1px solid rgba(212,175,55,0.12)', fontSize:'1.2rem', display:'inline-block', marginBottom:'0.5rem' }}>📊</div>
+              <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(0.9rem,3vw,1.3rem)', fontWeight:'700', color:'#1A1A1A', margin:'0 0 0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>Sales History</h2>
+              <p className="hidden sm:block" style={{ fontSize:'0.6rem', color:'#9ca3af', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>View Past Performance</p>
             </div>
-            <div style={{ background:'#D4AF37', borderRadius:'999px', width:'3rem', height:'3rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'1.1rem', flexShrink:0 }}>→</div>
+            <div style={{ background:'#D4AF37', borderRadius:'999px', width:'2rem', height:'2rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'0.9rem', flexShrink:0 }}>→</div>
           </div>
 
           {/* Products */}
-          <div className="ac" onClick={() => router.push('/store/products')} style={{ padding:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:'1.5rem' }}>
-              <div style={{ background:'rgba(212,175,55,0.06)', padding:'1.1rem', border:'1px solid rgba(212,175,55,0.12)', fontSize:'1.75rem' }}>📦</div>
-              <div>
-                <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'1.5rem', fontWeight:'700', color:'#1A1A1A', margin:'0 0 0.25rem' }}>Products</h2>
-                <p style={{ fontSize:'0.65rem', color:'#9ca3af', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>View & Manage Stock</p>
-              </div>
+          <div className="ac" onClick={() => router.push('/store/products')} style={{ padding:'1rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ minWidth: 0 }}>
+              <div className="hidden sm:block" style={{ background:'rgba(212,175,55,0.06)', padding:'0.6rem', border:'1px solid rgba(212,175,55,0.12)', fontSize:'1.2rem', display:'inline-block', marginBottom:'0.5rem' }}>📦</div>
+              <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(0.9rem,3vw,1.3rem)', fontWeight:'700', color:'#1A1A1A', margin:'0 0 0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>Products</h2>
+              <p className="hidden sm:block" style={{ fontSize:'0.6rem', color:'#9ca3af', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>View & Manage Stock</p>
             </div>
-            <div style={{ background:'#D4AF37', borderRadius:'999px', width:'3rem', height:'3rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'1.1rem', flexShrink:0 }}>→</div>
+            <div style={{ background:'#D4AF37', borderRadius:'999px', width:'2rem', height:'2rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'0.9rem', flexShrink:0 }}>→</div>
           </div>
 
           {/* Notifications */}
-          <div className="ac" onClick={() => router.push('/store/notifications')} style={{ padding:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', position:'relative' }}>
+          <div className="ac" onClick={() => router.push('/store/notifications')} style={{ padding:'1rem', display:'flex', alignItems:'center', justifyContent:'space-between', position:'relative' }}>
             {unreadGlobalCount > 0 ? (
-              <span style={{ position:'absolute', top:'0.75rem', right:'0.75rem', background:'#dc2626', color:'#fff', borderRadius:'999px', padding:'0.1rem 0.5rem', fontSize:'0.65rem', fontWeight:'800', border:'2px solid #fff' }}>{unreadGlobalCount}</span>
+              <span style={{ position:'absolute', top:'0.6rem', right:'0.6rem', background:'#dc2626', color:'#fff', borderRadius:'999px', padding:'0.1rem 0.5rem', fontSize:'0.6rem', fontWeight:'800', border:'2px solid #fff' }}>{unreadGlobalCount}</span>
             ) : hasNewNotification ? (
-              <span style={{ position:'absolute', top:'0.75rem', right:'0.75rem', width:'0.65rem', height:'0.65rem', background:'#dc2626', borderRadius:'50%', border:'2px solid #fff' }} />
+              <span style={{ position:'absolute', top:'0.6rem', right:'0.6rem', width:'0.6rem', height:'0.6rem', background:'#dc2626', borderRadius:'50%', border:'2px solid #fff' }} />
             ) : null}
-            <div style={{ display:'flex', alignItems:'center', gap:'1.5rem' }}>
-              <div style={{ background:'rgba(212,175,55,0.06)', padding:'1.1rem', border:'1px solid rgba(212,175,55,0.12)', fontSize:'1.75rem' }}>📬</div>
-              <div>
-                <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'1.5rem', fontWeight:'700', color:'#1A1A1A', margin:'0 0 0.25rem' }}>Notifications</h2>
-                <p style={{ fontSize:'0.65rem', color:'#9ca3af', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>View Admin Responses</p>
-              </div>
+            <div style={{ minWidth: 0 }}>
+              <div className="hidden sm:block" style={{ background:'rgba(212,175,55,0.06)', padding:'0.6rem', border:'1px solid rgba(212,175,55,0.12)', fontSize:'1.2rem', display:'inline-block', marginBottom:'0.5rem' }}>📬</div>
+              <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(0.9rem,3vw,1.3rem)', fontWeight:'700', color:'#1A1A1A', margin:'0 0 0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>Notifications</h2>
+              <p className="hidden sm:block" style={{ fontSize:'0.6rem', color:'#9ca3af', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>View Admin Responses</p>
             </div>
-            <div style={{ background:'#D4AF37', borderRadius:'999px', width:'3rem', height:'3rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'1.1rem', flexShrink:0 }}>→</div>
+            <div style={{ background:'#D4AF37', borderRadius:'999px', width:'2rem', height:'2rem', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'700', fontSize:'0.9rem', flexShrink:0 }}>→</div>
           </div>
         </section>
 
         {/* TODAY'S TRANSACTIONS */}
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
           {/* Left: Today's Sales Table */}
-          <div className="col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex justify-between items-center p-5 border-b border-gray-50">
+          <div className="col-span-1 lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="flex justify-between items-center p-4 md:p-5 border-b border-gray-50">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Today's Sales</h3>
                 <div className="w-8 h-0.5 bg-yellow-500 mt-1"/>
@@ -538,7 +530,8 @@ export default function StoreDashboardPage() {
             {todaySales.length === 0 ? (
               <div className="p-12 text-center text-gray-400 text-sm">No sales yet today</div>
             ) : (
-              <table className="w-full text-sm">
+              <div className="overflow-x-auto">
+              <table className="w-full text-sm" style={{ minWidth: '520px' }}>
                 <thead>
                   <tr className="border-b border-gray-50">
                     {['TIME','CUSTOMER','PRODUCT','SIZE','AMOUNT','DISCOUNT'].map(h => (
@@ -580,11 +573,12 @@ export default function StoreDashboardPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
 
           {/* Right: Quick Stats + Notifications */}
-          <div className="col-span-2 flex flex-col gap-4">
+          <div className="col-span-1 lg:col-span-2 flex flex-col gap-4">
             
             {/* Notifications card */}
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">

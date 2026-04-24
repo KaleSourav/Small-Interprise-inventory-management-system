@@ -61,7 +61,7 @@ export default function LoginPage() {
           borderRadius: '24px',
           boxShadow:    '0 20px 60px rgba(212,175,55,0.18)',
           border:       '1px solid #E8D5A3',
-          padding:      '2.75rem 2.5rem',
+          padding:      'clamp(1.25rem, 5vw, 2.75rem) clamp(1rem, 4vw, 2.5rem)',
           width:        '100%',
           maxWidth:     '460px'
         }}
@@ -71,7 +71,7 @@ export default function LoginPage() {
           <img
             src="/sairik-logo.jpg"
             alt="SAIRIK"
-            style={{ height: '220px', width: 'auto', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+            style={{ height: 'clamp(130px, 25vw, 220px)', width: 'auto', objectFit: 'contain', display: 'block', margin: '0 auto' }}
           />
         </div>
 
